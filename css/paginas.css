@@ -1,0 +1,213 @@
+/**
+ * =====================================================================
+ * ESTILOS ESPECÍFICOS DE PÁGINAS — paginas.css
+ * =====================================================================
+ * Perfil de cliente, plano/timeline de parcelas, painel de simulação
+ * de empréstimo, recibo para impressão, e ecrã de configurações.
+ * =====================================================================
+ */
+
+/* ---------------- Perfil de cliente ---------------- */
+
+.perfil-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-5);
+  margin-bottom: var(--espaco-6);
+  flex-wrap: wrap;
+}
+
+.perfil-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--cor-marinho-700);
+  color: var(--cor-neutro-0);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--tamanho-xl);
+  font-weight: var(--peso-semi);
+  flex-shrink: 0;
+}
+
+.perfil-info-principal { flex: 1; min-width: 200px; }
+.perfil-nome { font-size: var(--tamanho-lg); font-weight: var(--peso-semi); margin-bottom: var(--espaco-1); }
+.perfil-meta { display: flex; gap: var(--espaco-4); flex-wrap: wrap; font-size: var(--tamanho-sm); color: var(--cor-texto-secundario); }
+.perfil-meta span { display: flex; align-items: center; gap: var(--espaco-1); }
+
+.grade-perfil {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--espaco-5);
+  align-items: start;
+}
+@media (max-width: 900px) { .grade-perfil { grid-template-columns: 1fr; } }
+
+.lista-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--espaco-4);
+}
+@media (max-width: 560px) { .lista-info { grid-template-columns: 1fr; } }
+
+.lista-info__item .rotulo { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); margin-bottom: 2px; }
+.lista-info__item .valor { font-size: var(--tamanho-sm); font-weight: var(--peso-medio); }
+
+.abas {
+  display: flex;
+  gap: var(--espaco-2);
+  border-bottom: 1px solid var(--cor-borda);
+  margin-bottom: var(--espaco-5);
+  overflow-x: auto;
+}
+.aba-botao {
+  padding: var(--espaco-3) var(--espaco-4);
+  border: none;
+  background: transparent;
+  font-size: var(--tamanho-sm);
+  font-weight: var(--peso-medio);
+  color: var(--cor-texto-secundario);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+.aba-botao.ativa { color: var(--cor-marinho-800); border-bottom-color: var(--cor-marinho-800); }
+.aba-botao:hover:not(.ativa) { color: var(--cor-texto-principal); }
+.aba-painel { display: none; }
+.aba-painel.ativa { display: block; }
+
+/* ---------------- Simulação de empréstimo ---------------- */
+
+.grade-simulacao {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-6);
+  align-items: start;
+}
+@media (max-width: 900px) { .grade-simulacao { grid-template-columns: 1fr; } }
+
+.resumo-simulacao {
+  background: var(--cor-marinho-950);
+  color: var(--cor-neutro-0);
+  border-radius: var(--raio-lg);
+  padding: var(--espaco-6);
+}
+.resumo-simulacao__titulo { font-size: var(--tamanho-sm); color: var(--cor-texto-lateral); margin-bottom: var(--espaco-5); }
+.resumo-simulacao__linha {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: var(--espaco-3) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: var(--tamanho-sm);
+}
+.resumo-simulacao__linha:last-child { border-bottom: none; }
+.resumo-simulacao__linha .rotulo { color: var(--cor-texto-lateral); }
+.resumo-simulacao__linha .valor { font-weight: var(--peso-semi); font-variant-numeric: tabular-nums; }
+.resumo-simulacao__destaque {
+  margin-top: var(--espaco-4);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.resumo-simulacao__destaque .rotulo { font-size: var(--tamanho-sm); color: var(--cor-texto-lateral); }
+.resumo-simulacao__destaque .valor { font-size: var(--tamanho-xl); font-weight: var(--peso-negrito); color: var(--cor-esmeralda-400); }
+
+/* ---------------- Timeline / plano de parcelas ---------------- */
+
+.plano-parcelas { display: flex; flex-direction: column; }
+
+.parcela-linha {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+  padding: var(--espaco-4) 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+.parcela-linha:last-child { border-bottom: none; }
+
+.parcela-numero {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--cor-neutro-100);
+  color: var(--cor-texto-secundario);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--tamanho-xs);
+  font-weight: var(--peso-semi);
+  flex-shrink: 0;
+}
+.parcela-linha.paga .parcela-numero { background: var(--cor-sucesso-fundo); color: var(--cor-esmeralda-600); }
+.parcela-linha.atrasada .parcela-numero { background: var(--cor-perigo-fundo); color: var(--cor-perigo-texto-sobre-fundo-claro); }
+
+.parcela-detalhe { flex: 1; min-width: 0; }
+.parcela-vencimento { font-size: var(--tamanho-sm); font-weight: var(--peso-medio); }
+.parcela-composicao { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); }
+
+.parcela-valores { text-align: right; flex-shrink: 0; }
+.parcela-total { font-size: var(--tamanho-sm); font-weight: var(--peso-semi); font-variant-numeric: tabular-nums; }
+.parcela-saldo { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); }
+
+/* ---------------- Recibo para impressão ---------------- */
+
+.recibo-preview {
+  background: var(--cor-neutro-0);
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-md);
+  padding: var(--espaco-6);
+  max-width: 380px;
+  margin: 0 auto;
+  font-size: var(--tamanho-sm);
+}
+.recibo-preview__cabecalho { text-align: center; margin-bottom: var(--espaco-5); }
+.recibo-preview__logotipo { width: 48px; height: 48px; object-fit: contain; margin: 0 auto var(--espaco-2); display: block; }
+.recibo-preview__empresa { font-weight: var(--peso-semi); font-size: var(--tamanho-base); }
+.recibo-preview__contacto { color: var(--cor-texto-secundario); font-size: var(--tamanho-xs); margin-top: var(--espaco-1); line-height: 1.4; }
+.recibo-preview__numero { color: var(--cor-texto-secundario); font-size: var(--tamanho-xs); margin-top: var(--espaco-1); }
+.recibo-preview__linha { display: flex; justify-content: space-between; padding: var(--espaco-2) 0; border-bottom: 1px dashed var(--cor-borda); }
+.recibo-preview__linha:last-child { border-bottom: none; }
+.recibo-preview__total { display: flex; justify-content: space-between; padding-top: var(--espaco-3); margin-top: var(--espaco-2); border-top: 2px solid var(--cor-texto-principal); font-weight: var(--peso-semi); }
+
+/* ---------------- Configurações ---------------- */
+
+.grade-config {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: var(--espaco-6);
+}
+@media (max-width: 800px) { .grade-config { grid-template-columns: 1fr; } }
+
+.menu-config { display: flex; flex-direction: column; gap: 2px; }
+.menu-config__item {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--raio-md);
+  font-size: var(--tamanho-sm);
+  font-weight: var(--peso-medio);
+  color: var(--cor-texto-secundario);
+  border: none;
+  background: transparent;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+}
+.menu-config__item:hover { background: var(--cor-neutro-100); color: var(--cor-texto-principal); }
+.menu-config__item.ativo { background: var(--cor-info-fundo); color: var(--cor-marinho-700); }
+
+.upload-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+}
+.upload-logo__preview {
+  width: 64px; height: 64px;
+  border-radius: var(--raio-md);
+  background: var(--cor-neutro-100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cor-neutro-400);
+  font-size: var(--tamanho-lg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.upload-logo__preview img { width: 100%; height: 100%; object-fit: cover; }
+
+@media print {
+  .lateral, .topo, .pagina-cabecalho, .modal__rodape, .nao-imprimir { display: none !important; }
+  .conteudo { margin: 0 !important; padding: 0 !important; }
+  body { background: #fff; }
+}

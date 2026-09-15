@@ -1,0 +1,131 @@
+/**
+ * =====================================================================
+ * VARIÁVEIS DO SISTEMA DE DESIGN — variaveis.css
+ * =====================================================================
+ * Paleta: azul-marinho profundo (confiança, instituição financeira
+ * séria) + verde-esmeralda quente como cor de destaque (crescimento,
+ * dinheiro, positividade) — evitando o terracota/creme genérico e o
+ * "kit SaaS" de cartões arredondados idênticos com sombra cinza.
+ * Tipografia: uma família para tudo (Inter), com escala tipográfica
+ * deliberada e pesos distintos para criar hierarquia sem depender de
+ * cor ou itálico isolado.
+ * =====================================================================
+ */
+
+:root {
+  /* ---------- Paleta principal ---------- */
+  --cor-marinho-950: #0A1929;
+  --cor-marinho-900: #10233A;
+  --cor-marinho-800: #16324A;
+  --cor-marinho-700: #1F4260;
+  --cor-marinho-600: #2C5578;
+  --cor-marinho-500: #3D6B93;
+
+  --cor-esmeralda-600: #0E7A5F;
+  --cor-esmeralda-500: #14926F;
+  --cor-esmeralda-400: #1FAB84;
+  --cor-esmeralda-100: #E4F5EF;
+
+  --cor-ambar-600: #B5720A;
+  --cor-ambar-500: #D68910;
+  --cor-ambar-100: #FBF0DA;
+
+  --cor-terracota-700: #A8402F;
+  --cor-terracota-600: #B84A3E;
+  --cor-terracota-500: #C85C4F;
+  --cor-terracota-100: #FAE7E4;
+
+  /* ---------- Neutros ---------- */
+  --cor-neutro-0: #FFFFFF;
+  --cor-neutro-50: #F7F8FA;
+  --cor-neutro-100: #EEF1F4;
+  --cor-neutro-200: #DEE3E8;
+  --cor-neutro-300: #C4CBD3;
+  --cor-neutro-400: #9AA5B1;
+  --cor-neutro-500: #6B7684;
+  --cor-neutro-600: #4B5563;
+  --cor-neutro-700: #364152;
+  --cor-neutro-800: #212B36;
+  --cor-neutro-900: #141B24;
+
+  /* ---------- Papéis semânticos ---------- */
+  --cor-fundo-app: var(--cor-neutro-50);
+  --cor-fundo-cartao: var(--cor-neutro-0);
+  --cor-fundo-lateral: var(--cor-marinho-950);
+  --cor-fundo-topo: var(--cor-neutro-0);
+  --cor-texto-principal: var(--cor-neutro-800);
+  --cor-texto-secundario: var(--cor-neutro-500);
+  --cor-texto-lateral: #C7D3DE;
+  --cor-texto-lateral-ativo: var(--cor-neutro-0);
+  --cor-borda: var(--cor-neutro-200);
+  --cor-borda-forte: var(--cor-neutro-300);
+
+  --cor-sucesso: var(--cor-esmeralda-500);
+  --cor-sucesso-fundo: var(--cor-esmeralda-100);
+  --cor-aviso: var(--cor-ambar-500);
+  --cor-aviso-fundo: var(--cor-ambar-100);
+  --cor-perigo: var(--cor-terracota-600);
+  --cor-perigo-fundo: var(--cor-terracota-100);
+  /* Usar especificamente quando o texto/ícone aparece SOBRE
+     --cor-perigo-fundo (ex.: badges, chips) — --cor-perigo sozinha, nesse
+     par claro-sobre-claro, fica em 4.31:1, abaixo do mínimo de 4.5:1 do
+     WCAG AA para texto normal. Sobre fundo branco ou como borda,
+     --cor-perigo continua adequada e não precisa ser trocada. */
+  --cor-perigo-texto-sobre-fundo-claro: var(--cor-terracota-700);
+  --cor-info: var(--cor-marinho-600);
+  --cor-info-fundo: #E6EDF3;
+
+  /* ---------- Tipografia ---------- */
+  --fonte-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fonte-numerica: 'Inter', sans-serif;
+
+  --tamanho-xs: 0.75rem;    /* 12px */
+  --tamanho-sm: 0.8125rem;  /* 13px */
+  --tamanho-base: 0.9375rem;/* 15px */
+  --tamanho-md: 1.0625rem;  /* 17px */
+  --tamanho-lg: 1.3125rem;  /* 21px */
+  --tamanho-xl: 1.75rem;    /* 28px */
+  --tamanho-xxl: 2.25rem;   /* 36px */
+
+  --peso-regular: 400;
+  --peso-medio: 500;
+  --peso-semi: 600;
+  --peso-negrito: 700;
+
+  /* ---------- Espaçamento (escala de 4px) ---------- */
+  --espaco-1: 0.25rem;
+  --espaco-2: 0.5rem;
+  --espaco-3: 0.75rem;
+  --espaco-4: 1rem;
+  --espaco-5: 1.25rem;
+  --espaco-6: 1.5rem;
+  --espaco-8: 2rem;
+  --espaco-10: 2.5rem;
+  --espaco-12: 3rem;
+  --espaco-16: 4rem;
+
+  /* ---------- Raios e sombras ---------- */
+  --raio-sm: 6px;
+  --raio-md: 10px;
+  --raio-lg: 14px;
+  --raio-pill: 999px;
+
+  --sombra-sm: 0 1px 2px rgba(10, 25, 41, 0.06);
+  --sombra-md: 0 2px 8px rgba(10, 25, 41, 0.08);
+  --sombra-lg: 0 8px 24px rgba(10, 25, 41, 0.12);
+  --sombra-lateral: 2px 0 12px rgba(10, 25, 41, 0.15);
+
+  /* ---------- Layout ---------- */
+  --largura-lateral: 260px;
+  --largura-lateral-recolhida: 76px;
+  --altura-topo: 68px;
+  --transicao-padrao: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------- Z-index ---------- */
+  --z-lateral: 100;
+  --z-topo: 90;
+  --z-modal-fundo: 200;
+  --z-modal: 201;
+  --z-alerta: 300;
+  --z-dropdown: 150;
+}

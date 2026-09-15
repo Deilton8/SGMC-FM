@@ -1,0 +1,123 @@
+/**
+ * =====================================================================
+ * MODAIS — modais.css
+ * =====================================================================
+ */
+
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 41, 0.55);
+  z-index: var(--z-modal-fundo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transicao-padrao), visibility var(--transicao-padrao);
+}
+
+.modal-fundo.visivel {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--cor-fundo-cartao);
+  border-radius: var(--raio-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-lg);
+  transform: translateY(12px) scale(0.98);
+  transition: transform var(--transicao-padrao);
+  z-index: var(--z-modal);
+}
+
+/*
+ * Nos modais de formulário, a estrutura real é:
+ *   .modal (flex column) > .modal__cabecalho + <form> > .modal__corpo + .modal__rodape
+ * O <form> fica entre .modal e .modal__corpo/.modal__rodape, mas sem esta
+ * regra ele não participa do layout flex (comporta-se como um bloco normal).
+ * Isso quebra a cadeia flexbox: .modal__corpo perde o "flex:1" que lhe
+ * permitiria ocupar só o espaço restante, cresce livremente, o modal
+ * ultrapassa max-height sem gerar scroll em lado nenhum, e os campos mais
+ * abaixo do formulário ficam inacessíveis. min-height:0 é necessário porque,
+ * por padrão, um item flex não encolhe abaixo do tamanho do seu conteúdo —
+ * sem isto, .modal__corpo continuaria a esticar o <form> em vez de fazer
+ * scroll internamente.
+ */
+.modal > form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modal-fundo.visivel .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal--pequeno { max-width: 440px; }
+.modal--grande { max-width: 860px; }
+
+.modal__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  padding: var(--espaco-5) var(--espaco-6);
+  border-bottom: 1px solid var(--cor-borda);
+  flex-shrink: 0;
+}
+
+.modal__titulo { font-size: var(--tamanho-md); font-weight: var(--peso-semi); }
+.modal__subtitulo { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); margin-top: 2px; }
+
+.modal__fechar {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: var(--cor-neutro-100);
+  border-radius: 50%;
+  color: var(--cor-texto-secundario);
+  flex-shrink: 0;
+  transition: background var(--transicao-padrao);
+}
+.modal__fechar:hover { background: var(--cor-neutro-200); color: var(--cor-texto-principal); }
+
+.modal__corpo {
+  padding: var(--espaco-6);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--espaco-3);
+  padding: var(--espaco-5) var(--espaco-6);
+  border-top: 1px solid var(--cor-borda);
+  flex-shrink: 0;
+}
+.modal__rodape--entre { justify-content: space-between; }
+
+@media (max-width: 640px) {
+  .modal { max-height: 95vh; }
+  .modal__cabecalho, .modal__corpo, .modal__rodape { padding: var(--espaco-4); }
+}
+
+/* Modal de confirmação (excluir, cancelar, etc.) */
+.modal-confirmacao__icone {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--tamanho-lg);
+  margin-bottom: var(--espaco-4);
+}
+.modal-confirmacao__icone--perigo { background: var(--cor-perigo-fundo); color: var(--cor-perigo-texto-sobre-fundo-claro); }
+.modal-confirmacao__icone--aviso { background: var(--cor-aviso-fundo); color: var(--cor-ambar-600); }
+.modal-confirmacao__texto { color: var(--cor-texto-secundario); font-size: var(--tamanho-sm); }

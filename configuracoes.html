@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurações · FIEL Microcrédito, E.I.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variaveis.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/formularios.css">
+<link rel="stylesheet" href="css/tabelas.css">
+<link rel="stylesheet" href="css/modais.css">
+<link rel="stylesheet" href="css/alertas.css">
+<link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sobreposicao-lateral-movel" id="sobreposicao-lateral-movel"></div>
+
+  <aside class="lateral">
+    <div class="lateral__cabecalho">
+      <div class="lateral__logo-marca" data-config="logotipoUrl"><span class="lateral__logo-marca-texto">F</span></div>
+      <span class="lateral__nome-empresa" data-config="nomeEmpresa">FIEL Microcrédito, E.I.</span>
+    </div>
+    <nav class="lateral__nav">
+      <div class="lateral__secao-titulo">Principal</div>
+      <a href="dashboard.html" class="item-menu" data-pagina="dashboard"><i class="fa-solid fa-gauge-high item-menu__icone"></i><span class="item-menu__texto">Painel</span></a>
+      <a href="clientes.html" class="item-menu" data-pagina="clientes"><i class="fa-solid fa-users item-menu__icone"></i><span class="item-menu__texto">Clientes</span></a>
+      <a href="emprestimos.html" class="item-menu" data-pagina="emprestimos"><i class="fa-solid fa-hand-holding-dollar item-menu__icone"></i><span class="item-menu__texto">Empréstimos</span></a>
+      <a href="pagamentos.html" class="item-menu" data-pagina="pagamentos"><i class="fa-solid fa-money-bill-transfer item-menu__icone"></i><span class="item-menu__texto">Pagamentos</span></a>
+      <a href="caixa.html" class="item-menu" data-pagina="caixa"><i class="fa-solid fa-cash-register item-menu__icone"></i><span class="item-menu__texto">Caixa</span></a>
+      <div class="lateral__secao-titulo">Análise</div>
+      <a href="relatorios.html" class="item-menu" data-pagina="relatorios"><i class="fa-solid fa-chart-line item-menu__icone"></i><span class="item-menu__texto">Relatórios</span></a>
+      <div class="lateral__secao-titulo">Sistema</div>
+      <a href="configuracoes.html" class="item-menu ativo" data-pagina="configuracoes" data-somente-admin><i class="fa-solid fa-gears item-menu__icone"></i><span class="item-menu__texto">Configurações</span></a>
+    </nav>
+    <div class="lateral__rodape">
+      <button class="botao-recolher" id="botao-recolher-lateral" aria-label="Recolher menu"><i class="fa-solid fa-angles-left"></i></button>
+    </div>
+  </aside>
+
+  <header class="topo">
+    <div class="topo__esquerda">
+      <button class="botao-menu-movel" id="botao-menu-movel" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topo__pesquisa">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <label for="pesquisa-global-input" class="visualmente-oculto">Pesquisa global de clientes e contratos</label>
+        <input type="text" id="pesquisa-global-input" placeholder="Pesquisar clientes, contratos...">
+        <div id="pesquisa-global-resultados" class="oculto" style="position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--cor-neutro-0);border:1px solid var(--cor-borda);border-radius:var(--raio-md);box-shadow:var(--sombra-lg);max-height:360px;overflow-y:auto;z-index:var(--z-dropdown);"></div>
+      </div>
+    </div>
+    <div class="topo__direita">
+      <div class="topo__perfil">
+        <div class="avatar-iniciais" data-utilizador-iniciais>--</div>
+        <div class="topo__perfil-info">
+          <span class="topo__perfil-nome" data-utilizador-nome>Carregando...</span>
+          <span class="topo__perfil-cargo" data-utilizador-perfil>—</span>
+        </div>
+      </div>
+      <button class="botao botao--icone botao--fantasma" data-acao-logout aria-label="Terminar sessão"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+
+    <div class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Configurações</h1>
+        <p class="pagina-subtitulo">Personalize os parâmetros gerais do sistema.</p>
+      </div>
+    </div>
+
+    <div class="grade-config">
+
+      <nav class="menu-config">
+        <button class="menu-config__item ativo" data-secao="conta"><i class="fa-solid fa-user-shield"></i> A Minha Conta</button>
+        <button class="menu-config__item" data-secao="geral" data-somente-admin><i class="fa-solid fa-building"></i> Empresa</button>
+        <button class="menu-config__item" data-secao="financeiro" data-somente-admin><i class="fa-solid fa-percent"></i> Parâmetros Financeiros</button>
+        <button class="menu-config__item" data-secao="numeracao" data-somente-admin><i class="fa-solid fa-list-ol"></i> Numeração</button>
+        <button class="menu-config__item" data-secao="seguranca" data-somente-admin><i class="fa-solid fa-shield-halved"></i> Segurança</button>
+        <button class="menu-config__item" data-secao="utilizadores" data-somente-admin><i class="fa-solid fa-user-gear"></i> Utilizadores</button>
+      </nav>
+
+      <div>
+
+        <!-- ===== Secção: A Minha Conta (disponível para qualquer perfil) ===== -->
+        <div class="cartao secao-config" data-secao-config="conta">
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Alterar a Minha Senha</span></div>
+          <form id="form-alterar-senha">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="conta-senha-atual">Senha Atual <span class="obrigatorio">*</span></label>
+              <input type="password" id="conta-senha-atual" class="campo-entrada" required autocomplete="current-password">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="conta-senha-nova">Nova Senha <span class="obrigatorio">*</span></label>
+              <input type="password" id="conta-senha-nova" class="campo-entrada" required autocomplete="new-password">
+              <div class="campo-ajuda">Mínimo de 4 caracteres.</div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="conta-senha-confirmar">Confirmar Nova Senha <span class="obrigatorio">*</span></label>
+              <input type="password" id="conta-senha-confirmar" class="campo-entrada" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="botao botao--primario">Alterar Senha</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Empresa ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="geral" data-somente-admin>
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Dados da Empresa</span></div>
+          <form id="form-config-geral">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-nome-empresa">Nome da Empresa</label>
+              <input type="text" id="config-nome-empresa" class="campo-entrada" placeholder="ex.: FIEL Microcrédito, E.I.">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-telefone-empresa">Telefone</label>
+              <input type="text" id="config-telefone-empresa" class="campo-entrada" placeholder="ex.: +258 82 723 3067 / +258 85 398 3532">
+              <div class="campo-ajuda">Aparece nos recibos de pagamento. Pode indicar mais do que um número.</div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-email-empresa">Email</label>
+              <input type="email" id="config-email-empresa" class="campo-entrada" placeholder="ex.: comercial@fielmicrocredito.com">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-endereco-empresa">Endereço</label>
+              <input type="text" id="config-endereco-empresa" class="campo-entrada" placeholder="ex.: Av. Emília Daússe, Nr. 574, Maputo Cidade, Moçambique">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo">Logotipo</label>
+              <div class="upload-logo">
+                <div class="upload-logo__preview" id="preview-logotipo"><i class="fa-solid fa-image"></i></div>
+                <div>
+                  <input type="file" id="config-logotipo-arquivo" accept="image/*" class="visualmente-oculto">
+                  <button type="button" class="botao botao--secundario botao--pequeno" onclick="document.getElementById('config-logotipo-arquivo').click()">Carregar Imagem</button>
+                  <div class="campo-ajuda">PNG ou JPG, até 35KB. Recomendado 150x150px — imagens maiores ou com muitos detalhes/cores tendem a ultrapassar o limite mesmo em dimensões pequenas.</div>
+                </div>
+              </div>
+              <input type="hidden" id="config-logotipo-url">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-moeda">Moeda</label>
+              <select id="config-moeda" class="campo-select">
+                <option value="MZN">Metical Moçambicano (MZN)</option>
+              </select>
+              <div class="campo-ajuda">Atualmente o sistema opera apenas em Metical.</div>
+            </div>
+            <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Financeiro ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="financeiro" data-somente-admin>
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Parâmetros Financeiros Padrão</span></div>
+          <form id="form-config-financeiro">
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-taxa-padrao">Taxa de Juros Padrão (%)</label>
+                <input type="number" id="config-taxa-padrao" class="campo-entrada" step="0.1" min="0">
+                <div class="campo-ajuda">Usada como sugestão inicial ao criar um novo empréstimo.</div>
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-multa-padrao">Multa Padrão (%)</label>
+                <input type="number" id="config-multa-padrao" class="campo-entrada" step="0.1" min="0">
+              </div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo">Tipo de Cálculo da Multa</label>
+              <div class="grupo-radio">
+                <label class="opcao-radio"><input type="radio" name="config-tipo-multa" value="percentual"> Percentual sobre a parcela</label>
+                <label class="opcao-radio"><input type="radio" name="config-tipo-multa" value="fixo"> Valor fixo por dia de atraso</label>
+              </div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-valor-fixo-multa">Valor Fixo por Dia de Atraso (MT)</label>
+              <input type="number" id="config-valor-fixo-multa" class="campo-entrada" min="0">
+            </div>
+            <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Numeração ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="numeracao" data-somente-admin>
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Numeração de Contratos e Recibos</span></div>
+          <form id="form-config-numeracao">
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-numero-inicial-contratos">Número Inicial dos Contratos</label>
+                <input type="number" id="config-numero-inicial-contratos" class="campo-entrada" min="1">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-numero-inicial-recibos">Número Inicial dos Recibos</label>
+                <input type="number" id="config-numero-inicial-recibos" class="campo-entrada" min="1">
+              </div>
+            </div>
+            <div class="alerta-inline alerta-inline--aviso">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Alterar estes números não afeta contratos ou recibos já existentes — aplica-se apenas a novos registos.</span>
+            </div>
+            <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Segurança ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="seguranca" data-somente-admin>
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Segurança</span></div>
+          <form id="form-config-seguranca">
+            <div class="campo-grupo">
+              <label class="opcao-checkbox">
+                <input type="checkbox" id="config-mostrar-credenciais-teste">
+                <span>Mostrar credenciais de exemplo (admin/operador) na tela de início de sessão</span>
+              </label>
+            </div>
+            <div class="alerta-inline alerta-inline--aviso">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Mantenha esta opção desligada em produção. Ela existe apenas para facilitar demonstrações do sistema — enquanto estiver ligada, qualquer pessoa que aceda à página de início de sessão vê o utilizador e a senha padrão do Administrador.</span>
+            </div>
+            <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Utilizadores ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="utilizadores" data-somente-admin>
+          <div class="cartao__cabecalho">
+            <span class="cartao__titulo">Utilizadores do Sistema</span>
+            <button class="botao botao--primario botao--pequeno" id="botao-novo-utilizador"><i class="fa-solid fa-plus"></i> Novo Utilizador</button>
+          </div>
+          <div class="painel-tabela__scroll">
+            <table class="tabela-dados">
+              <thead><tr><th>Nome</th><th>Utilizador</th><th>Perfil</th><th>Estado</th><th class="col-acoes">Ações</th></tr></thead>
+              <tbody id="tabela-utilizadores-corpo">
+                <tr class="linha-carregando"><td colspan="5"><div class="linha-carregando-conteudo"><div class="girador"></div> A carregar...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL: NOVO / EDITAR UTILIZADOR ================= -->
+<div class="modal-fundo" id="modal-utilizador">
+  <div class="modal modal--pequeno">
+    <div class="modal__cabecalho">
+      <div class="modal__titulo" id="modal-utilizador-titulo">Novo Utilizador</div>
+      <button class="modal__fechar" data-modal-fechar="modal-utilizador" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="form-utilizador" novalidate>
+      <div class="modal__corpo">
+        <input type="hidden" id="utilizador-id-original">
+        <div class="campo-grupo">
+          <label class="campo-rotulo" for="utilizador-nome">Nome Completo <span class="obrigatorio">*</span></label>
+          <input type="text" id="utilizador-nome" class="campo-entrada" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-rotulo" for="utilizador-login">Nome de Utilizador <span class="obrigatorio">*</span></label>
+          <input type="text" id="utilizador-login" class="campo-entrada" required autocomplete="off">
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-rotulo" for="utilizador-senha">Senha <span class="obrigatorio" id="utilizador-senha-obrigatorio">*</span></label>
+          <input type="password" id="utilizador-senha" class="campo-entrada" autocomplete="new-password">
+          <div class="campo-ajuda" id="utilizador-senha-ajuda">Mínimo de 4 caracteres.</div>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-rotulo">Perfil <span class="obrigatorio">*</span></label>
+          <div class="grupo-radio">
+            <label class="opcao-radio"><input type="radio" name="utilizador-perfil" value="Operador" checked> Operador</label>
+            <label class="opcao-radio"><input type="radio" name="utilizador-perfil" value="Administrador"> Administrador</label>
+          </div>
+        </div>
+        <div class="campo-grupo" id="grupo-utilizador-estado" style="display:none;">
+          <label class="campo-rotulo">Estado</label>
+          <div class="grupo-radio">
+            <label class="opcao-radio"><input type="radio" name="utilizador-estado" value="Ativo" checked> Ativo</label>
+            <label class="opcao-radio"><input type="radio" name="utilizador-estado" value="Inativo"> Inativo</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal__rodape">
+        <button type="button" class="botao botao--secundario" data-modal-fechar="modal-utilizador">Cancelar</button>
+        <button type="submit" class="botao botao--primario" id="botao-guardar-utilizador">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/config.js"></script>
+</body>
+</html>

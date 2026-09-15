@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagamentos · FIEL Microcrédito, E.I.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variaveis.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/formularios.css">
+<link rel="stylesheet" href="css/tabelas.css">
+<link rel="stylesheet" href="css/modais.css">
+<link rel="stylesheet" href="css/alertas.css">
+<link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sobreposicao-lateral-movel" id="sobreposicao-lateral-movel"></div>
+
+  <aside class="lateral">
+    <div class="lateral__cabecalho">
+      <div class="lateral__logo-marca" data-config="logotipoUrl"><span class="lateral__logo-marca-texto">F</span></div>
+      <span class="lateral__nome-empresa" data-config="nomeEmpresa">FIEL Microcrédito, E.I.</span>
+    </div>
+    <nav class="lateral__nav">
+      <div class="lateral__secao-titulo">Principal</div>
+      <a href="dashboard.html" class="item-menu" data-pagina="dashboard"><i class="fa-solid fa-gauge-high item-menu__icone"></i><span class="item-menu__texto">Painel</span></a>
+      <a href="clientes.html" class="item-menu" data-pagina="clientes"><i class="fa-solid fa-users item-menu__icone"></i><span class="item-menu__texto">Clientes</span></a>
+      <a href="emprestimos.html" class="item-menu" data-pagina="emprestimos"><i class="fa-solid fa-hand-holding-dollar item-menu__icone"></i><span class="item-menu__texto">Empréstimos</span></a>
+      <a href="pagamentos.html" class="item-menu" data-pagina="pagamentos"><i class="fa-solid fa-money-bill-transfer item-menu__icone"></i><span class="item-menu__texto">Pagamentos</span></a>
+      <a href="caixa.html" class="item-menu" data-pagina="caixa"><i class="fa-solid fa-cash-register item-menu__icone"></i><span class="item-menu__texto">Caixa</span></a>
+      <div class="lateral__secao-titulo">Análise</div>
+      <a href="relatorios.html" class="item-menu" data-pagina="relatorios"><i class="fa-solid fa-chart-line item-menu__icone"></i><span class="item-menu__texto">Relatórios</span></a>
+      <div class="lateral__secao-titulo">Sistema</div>
+      <a href="configuracoes.html" class="item-menu" data-pagina="configuracoes" data-somente-admin><i class="fa-solid fa-gears item-menu__icone"></i><span class="item-menu__texto">Configurações</span></a>
+    </nav>
+    <div class="lateral__rodape">
+      <button class="botao-recolher" id="botao-recolher-lateral" aria-label="Recolher menu"><i class="fa-solid fa-angles-left"></i></button>
+    </div>
+  </aside>
+
+  <header class="topo">
+    <div class="topo__esquerda">
+      <button class="botao-menu-movel" id="botao-menu-movel" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topo__pesquisa">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <label for="pesquisa-global-input" class="visualmente-oculto">Pesquisa global de clientes e contratos</label>
+        <input type="text" id="pesquisa-global-input" placeholder="Pesquisar clientes, contratos...">
+        <div id="pesquisa-global-resultados" class="oculto" style="position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--cor-neutro-0);border:1px solid var(--cor-borda);border-radius:var(--raio-md);box-shadow:var(--sombra-lg);max-height:360px;overflow-y:auto;z-index:var(--z-dropdown);"></div>
+      </div>
+    </div>
+    <div class="topo__direita">
+      <div class="topo__perfil">
+        <div class="avatar-iniciais" data-utilizador-iniciais>--</div>
+        <div class="topo__perfil-info">
+          <span class="topo__perfil-nome" data-utilizador-nome>Carregando...</span>
+          <span class="topo__perfil-cargo" data-utilizador-perfil>—</span>
+        </div>
+      </div>
+      <button class="botao botao--icone botao--fantasma" data-acao-logout aria-label="Terminar sessão"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+
+    <div class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Pagamentos</h1>
+        <p class="pagina-subtitulo">Histórico de todos os pagamentos recebidos.</p>
+      </div>
+    </div>
+
+    <div class="painel-tabela">
+      <div class="painel-tabela__barra">
+        <div class="painel-tabela__filtros">
+          <label for="filtro-metodo-pagamentos" class="visualmente-oculto">Filtrar pagamentos por método</label>
+          <select id="filtro-metodo-pagamentos">
+            <option value="">Todos os métodos</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="M-Pesa">M-Pesa</option>
+            <option value="e-Mola">e-Mola</option>
+            <option value="Transferência Bancária">Transferência Bancária</option>
+          </select>
+          <label for="filtro-data-inicio-pagamentos" class="visualmente-oculto">Data inicial do período de pagamentos</label>
+          <input type="date" id="filtro-data-inicio-pagamentos" class="campo-entrada" style="width:auto;padding:var(--espaco-2) var(--espaco-3);">
+          <span style="color:var(--cor-texto-secundario);font-size:var(--tamanho-sm);">até</span>
+          <label for="filtro-data-fim-pagamentos" class="visualmente-oculto">Data final do período de pagamentos</label>
+          <input type="date" id="filtro-data-fim-pagamentos" class="campo-entrada" style="width:auto;padding:var(--espaco-2) var(--espaco-3);">
+        </div>
+      </div>
+
+      <div class="painel-tabela__scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr>
+              <th>Recibo</th>
+              <th>Contrato</th>
+              <th class="col-numerica">Valor Pago</th>
+              <th class="col-numerica">Multa</th>
+              <th>Método</th>
+              <th>Data</th>
+              <th>Operador</th>
+              <th>Estado</th>
+              <th class="col-acoes">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-pagamentos-corpo">
+            <tr class="linha-carregando"><td colspan="9"><div class="linha-carregando-conteudo"><div class="girador"></div> A carregar...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL: RECIBO ================= -->
+<div class="modal-fundo" id="modal-recibo">
+  <div class="modal modal--pequeno">
+    <div class="modal__cabecalho">
+      <div class="modal__titulo">Recibo de Pagamento</div>
+      <button class="modal__fechar" data-modal-fechar="modal-recibo" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal__corpo">
+      <div class="recibo-preview" id="recibo-preview-conteudo">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+    <div class="modal__rodape">
+      <button type="button" class="botao botao--secundario" data-modal-fechar="modal-recibo">Fechar</button>
+      <button type="button" class="botao botao--primario" id="botao-baixar-recibo-pdf"><i class="fa-solid fa-download"></i> Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/pagamentos.js"></script>
+</body>
+</html>

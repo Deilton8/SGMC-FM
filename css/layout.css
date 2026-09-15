@@ -1,0 +1,339 @@
+/**
+ * =====================================================================
+ * LAYOUT PRINCIPAL — layout.css
+ * =====================================================================
+ * Estrutura: barra lateral fixa recolhível + barra superior fixa +
+ * área de conteúdo rolável. Em ecrãs pequenos, a lateral vira um
+ * painel deslizante sobreposto (drawer) acionado pelo botão de menu.
+ * =====================================================================
+ */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------------- Barra lateral ---------------- */
+
+.lateral {
+  width: var(--largura-lateral);
+  flex-shrink: 0;
+  background: var(--cor-fundo-lateral);
+  color: var(--cor-texto-lateral);
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  z-index: var(--z-lateral);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sombra-lateral);
+  transition: width var(--transicao-padrao), transform var(--transicao-padrao);
+}
+
+.app-shell.lateral-recolhida .lateral {
+  width: var(--largura-lateral-recolhida);
+}
+
+.lateral__cabecalho {
+  height: var(--altura-topo);
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  padding: 0 var(--espaco-5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.lateral__logo-marca {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--raio-sm);
+  background: var(--cor-esmeralda-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-neutro-0);
+  font-weight: var(--peso-negrito);
+  font-size: var(--tamanho-md);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.lateral__logo-marca-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lateral__nome-empresa {
+  font-weight: var(--peso-semi);
+  color: var(--cor-neutro-0);
+  font-size: var(--tamanho-base);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-shell.lateral-recolhida .lateral__nome-empresa,
+.app-shell.lateral-recolhida .item-menu__texto,
+.app-shell.lateral-recolhida .lateral__secao-titulo {
+  display: none;
+}
+
+.lateral__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--espaco-4) var(--espaco-3);
+}
+
+.lateral__secao-titulo {
+  font-size: var(--tamanho-xs);
+  font-weight: var(--peso-semi);
+  color: var(--cor-neutro-500);
+  padding: var(--espaco-4) var(--espaco-3) var(--espaco-2);
+  letter-spacing: 0.02em;
+}
+
+.item-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3) var(--espaco-3);
+  border-radius: var(--raio-md);
+  color: var(--cor-texto-lateral);
+  cursor: pointer;
+  transition: background var(--transicao-padrao), color var(--transicao-padrao);
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.item-menu:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--cor-neutro-0);
+  text-decoration: none;
+}
+
+.item-menu.ativo {
+  background: var(--cor-esmeralda-600);
+  color: var(--cor-neutro-0);
+}
+
+.item-menu__icone {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: var(--tamanho-md);
+}
+
+.item-menu__texto {
+  font-size: var(--tamanho-sm);
+  font-weight: var(--peso-medio);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lateral__rodape {
+  padding: var(--espaco-4);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.botao-recolher {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: var(--cor-texto-lateral);
+  padding: var(--espaco-2);
+  border-radius: var(--raio-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transicao-padrao);
+}
+.botao-recolher:hover { background: rgba(255,255,255,0.12); }
+
+/* ---------------- Barra superior ---------------- */
+
+.topo {
+  position: fixed;
+  top: 0;
+  left: var(--largura-lateral);
+  right: 0;
+  height: var(--altura-topo);
+  background: var(--cor-fundo-topo);
+  border-bottom: 1px solid var(--cor-borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--espaco-6);
+  z-index: var(--z-topo);
+  transition: left var(--transicao-padrao);
+}
+
+.app-shell.lateral-recolhida .topo {
+  left: var(--largura-lateral-recolhida);
+}
+
+.topo__esquerda {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+  flex: 1;
+  min-width: 0;
+}
+
+.botao-menu-movel { display: none; }
+
+.topo__pesquisa {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+}
+
+.topo__pesquisa input {
+  width: 100%;
+  padding: var(--espaco-2) var(--espaco-3) var(--espaco-2) var(--espaco-8);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pill);
+  background: var(--cor-neutro-50);
+  font-size: var(--tamanho-sm);
+  transition: border-color var(--transicao-padrao), background var(--transicao-padrao);
+}
+.topo__pesquisa input:focus {
+  outline: none;
+  border-color: var(--cor-marinho-500);
+  background: var(--cor-neutro-0);
+}
+.topo__pesquisa i {
+  position: absolute;
+  left: var(--espaco-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cor-neutro-400);
+  font-size: var(--tamanho-sm);
+}
+
+.topo__direita {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+  flex-shrink: 0;
+}
+
+.topo__perfil {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  padding: var(--espaco-2) var(--espaco-3);
+  border-radius: var(--raio-md);
+  cursor: pointer;
+  transition: background var(--transicao-padrao);
+}
+.topo__perfil:hover { background: var(--cor-neutro-50); }
+
+.avatar-iniciais {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cor-marinho-700);
+  color: var(--cor-neutro-0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--peso-semi);
+  font-size: var(--tamanho-sm);
+  flex-shrink: 0;
+}
+
+.topo__perfil-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.topo__perfil-nome { font-size: var(--tamanho-sm); font-weight: var(--peso-medio); }
+.topo__perfil-cargo { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); }
+
+/* ---------------- Conteúdo principal ---------------- */
+
+.conteudo {
+  margin-left: var(--largura-lateral);
+  margin-top: var(--altura-topo);
+  flex: 1;
+  padding: var(--espaco-6);
+  min-width: 0;
+  transition: margin-left var(--transicao-padrao);
+}
+
+.app-shell.lateral-recolhida .conteudo {
+  margin-left: var(--largura-lateral-recolhida);
+}
+
+.pagina-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  margin-bottom: var(--espaco-6);
+  flex-wrap: wrap;
+}
+
+.pagina-titulo { font-size: var(--tamanho-xl); font-weight: var(--peso-semi); }
+.pagina-subtitulo { color: var(--cor-texto-secundario); font-size: var(--tamanho-sm); margin-top: var(--espaco-1); }
+
+.pagina-acoes { display: flex; gap: var(--espaco-3); flex-wrap: wrap; }
+
+.sobreposicao-lateral-movel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 41, 0.5);
+  z-index: 99;
+}
+
+/* ---------------- Responsivo ---------------- */
+
+@media (max-width: 1024px) {
+  .lateral {
+    transform: translateX(-100%);
+    width: var(--largura-lateral);
+  }
+  .app-shell.lateral-movel-aberta .lateral {
+    transform: translateX(0);
+  }
+  .app-shell.lateral-movel-aberta .sobreposicao-lateral-movel {
+    display: block;
+  }
+  .topo, .conteudo {
+    left: 0;
+    margin-left: 0;
+  }
+  .botao-recolher { display: none; }
+  .botao-menu-movel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px; height: 38px;
+    border: none;
+    background: transparent;
+    font-size: var(--tamanho-lg);
+    color: var(--cor-texto-principal);
+    border-radius: var(--raio-sm);
+    flex-shrink: 0;
+  }
+  .botao-menu-movel:hover { background: var(--cor-neutro-100); }
+}
+
+@media (max-width: 768px) {
+  .topo { padding: 0 var(--espaco-4); }
+  .conteudo { padding: var(--espaco-4); }
+  .topo__pesquisa { display: none; }
+  .topo__perfil-info { display: none; }
+  .pagina-titulo { font-size: var(--tamanho-lg); }
+}
+
+@media (max-width: 480px) {
+  .pagina-cabecalho { flex-direction: column; }
+  .pagina-acoes { width: 100%; }
+  .pagina-acoes .botao { flex: 1; }
+}

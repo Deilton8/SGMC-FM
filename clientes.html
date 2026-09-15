@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clientes · FIEL Microcrédito, E.I.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variaveis.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/formularios.css">
+<link rel="stylesheet" href="css/tabelas.css">
+<link rel="stylesheet" href="css/modais.css">
+<link rel="stylesheet" href="css/alertas.css">
+<link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sobreposicao-lateral-movel" id="sobreposicao-lateral-movel"></div>
+
+  <!-- ================= BARRA LATERAL ================= -->
+  <aside class="lateral">
+    <div class="lateral__cabecalho">
+      <div class="lateral__logo-marca" data-config="logotipoUrl"><span class="lateral__logo-marca-texto">F</span></div>
+      <span class="lateral__nome-empresa" data-config="nomeEmpresa">FIEL Microcrédito, E.I.</span>
+    </div>
+    <nav class="lateral__nav">
+      <div class="lateral__secao-titulo">Principal</div>
+      <a href="dashboard.html" class="item-menu" data-pagina="dashboard">
+        <i class="fa-solid fa-gauge-high item-menu__icone"></i><span class="item-menu__texto">Painel</span>
+      </a>
+      <a href="clientes.html" class="item-menu" data-pagina="clientes">
+        <i class="fa-solid fa-users item-menu__icone"></i><span class="item-menu__texto">Clientes</span>
+      </a>
+      <a href="emprestimos.html" class="item-menu" data-pagina="emprestimos">
+        <i class="fa-solid fa-hand-holding-dollar item-menu__icone"></i><span class="item-menu__texto">Empréstimos</span>
+      </a>
+      <a href="pagamentos.html" class="item-menu" data-pagina="pagamentos">
+        <i class="fa-solid fa-money-bill-transfer item-menu__icone"></i><span class="item-menu__texto">Pagamentos</span>
+      </a>
+      <a href="caixa.html" class="item-menu" data-pagina="caixa">
+        <i class="fa-solid fa-cash-register item-menu__icone"></i><span class="item-menu__texto">Caixa</span>
+      </a>
+      <div class="lateral__secao-titulo">Análise</div>
+      <a href="relatorios.html" class="item-menu" data-pagina="relatorios">
+        <i class="fa-solid fa-chart-line item-menu__icone"></i><span class="item-menu__texto">Relatórios</span>
+      </a>
+      <div class="lateral__secao-titulo">Sistema</div>
+      <a href="configuracoes.html" class="item-menu" data-pagina="configuracoes" data-somente-admin>
+        <i class="fa-solid fa-gears item-menu__icone"></i><span class="item-menu__texto">Configurações</span>
+      </a>
+    </nav>
+    <div class="lateral__rodape">
+      <button class="botao-recolher" id="botao-recolher-lateral" aria-label="Recolher menu"><i class="fa-solid fa-angles-left"></i></button>
+    </div>
+  </aside>
+
+  <!-- ================= BARRA SUPERIOR ================= -->
+  <header class="topo">
+    <div class="topo__esquerda">
+      <button class="botao-menu-movel" id="botao-menu-movel" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topo__pesquisa">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <label for="pesquisa-global-input" class="visualmente-oculto">Pesquisa global de clientes e contratos</label>
+        <input type="text" id="pesquisa-global-input" placeholder="Pesquisar clientes, contratos...">
+        <div id="pesquisa-global-resultados" class="oculto" style="position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--cor-neutro-0);border:1px solid var(--cor-borda);border-radius:var(--raio-md);box-shadow:var(--sombra-lg);max-height:360px;overflow-y:auto;z-index:var(--z-dropdown);"></div>
+      </div>
+    </div>
+    <div class="topo__direita">
+      <div class="topo__perfil">
+        <div class="avatar-iniciais" data-utilizador-iniciais>--</div>
+        <div class="topo__perfil-info">
+          <span class="topo__perfil-nome" data-utilizador-nome>Carregando...</span>
+          <span class="topo__perfil-cargo" data-utilizador-perfil>—</span>
+        </div>
+      </div>
+      <button class="botao botao--icone botao--fantasma" data-acao-logout aria-label="Terminar sessão" title="Terminar sessão"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+  </header>
+
+  <!-- ================= CONTEÚDO ================= -->
+  <main class="conteudo">
+
+    <div class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Clientes</h1>
+        <p class="pagina-subtitulo">Cadastre, edite e consulte os clientes da carteira.</p>
+      </div>
+      <div class="pagina-acoes">
+        <button class="botao botao--primario" id="botao-novo-cliente">
+          <i class="fa-solid fa-plus"></i> Novo Cliente
+        </button>
+      </div>
+    </div>
+
+    <div class="painel-tabela">
+      <div class="painel-tabela__barra">
+        <div class="painel-tabela__pesquisa">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <label for="filtro-pesquisa-clientes" class="visualmente-oculto">Pesquisar clientes por nome, BI ou telefone</label>
+          <input type="text" id="filtro-pesquisa-clientes" placeholder="Pesquisar por nome, BI, telefone...">
+        </div>
+        <div class="painel-tabela__filtros">
+          <label for="filtro-estado-clientes" class="visualmente-oculto">Filtrar clientes por estado</label>
+          <select id="filtro-estado-clientes">
+            <option value="">Todos os estados</option>
+            <option value="Ativo">Ativo</option>
+            <option value="Bloqueado">Bloqueado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="painel-tabela__scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome Completo</th>
+              <th>BI</th>
+              <th>Telefone</th>
+              <th>Bairro / Distrito</th>
+              <th>Estado</th>
+              <th class="col-acoes">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-clientes-corpo">
+            <tr class="linha-carregando"><td colspan="7"><div class="linha-carregando-conteudo"><div class="girador"></div> A carregar clientes...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="painel-tabela__rodape">
+        <span class="paginacao-info" id="paginacao-info-clientes">—</span>
+        <div class="paginacao-controlos" id="paginacao-controlos-clientes"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL: CADASTRAR / EDITAR CLIENTE ================= -->
+<div class="modal-fundo" id="modal-cliente">
+  <div class="modal modal--grande">
+    <div class="modal__cabecalho">
+      <div>
+        <div class="modal__titulo" id="modal-cliente-titulo">Novo Cliente</div>
+        <div class="modal__subtitulo">Preencha os dados pessoais e de contacto do cliente.</div>
+      </div>
+      <button class="modal__fechar" data-modal-fechar="modal-cliente" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <form id="form-cliente" novalidate>
+      <div class="modal__corpo">
+        <input type="hidden" id="cliente-codigo-original">
+
+        <div class="secao-formulario">
+          <div class="secao-formulario__titulo"><i class="fa-solid fa-id-card"></i> Dados Pessoais</div>
+          <div class="linha-campos">
+            <div class="campo-grupo" style="grid-column: span 2;">
+              <label class="campo-rotulo" for="cliente-nome">Nome Completo</label>
+              <input type="text" id="cliente-nome" class="campo-entrada" placeholder="ex.: Amélia da Conceição Machava">
+            </div>
+          </div>
+          <div class="linha-campos--3">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-bi">Número do BI</label>
+              <input type="text" id="cliente-bi" class="campo-entrada" data-validacao="bi" placeholder="110100123456A">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-nuit">NUIT</label>
+              <input type="text" id="cliente-nuit" class="campo-entrada" placeholder="400123456">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-sexo">Sexo</label>
+              <select id="cliente-sexo" class="campo-select">
+                <option value="">Selecione</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Masculino">Masculino</option>
+              </select>
+            </div>
+          </div>
+          <div class="linha-campos">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-nascimento">Data de Nascimento</label>
+              <input type="date" id="cliente-nascimento" class="campo-entrada">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-profissao">Profissão</label>
+              <input type="text" id="cliente-profissao" class="campo-entrada" placeholder="ex.: Comerciante">
+            </div>
+          </div>
+        </div>
+
+        <div class="secao-formulario">
+          <div class="secao-formulario__titulo"><i class="fa-solid fa-phone"></i> Contactos</div>
+          <div class="linha-campos">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-telefone">Telefone</label>
+              <div class="campo-prefixo-wrapper">
+                <span class="campo-prefixo">+258</span>
+                <input type="text" id="cliente-telefone" class="campo-entrada" data-validacao="telefone" placeholder="84 123 4567">
+              </div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-telefone-alt">Telefone Alternativo</label>
+              <div class="campo-prefixo-wrapper">
+                <span class="campo-prefixo">+258</span>
+                <input type="text" id="cliente-telefone-alt" class="campo-entrada" placeholder="82 765 4321">
+              </div>
+            </div>
+          </div>
+          <div class="campo-grupo">
+            <label class="campo-rotulo" for="cliente-email">Email</label>
+            <input type="email" id="cliente-email" class="campo-entrada" data-validacao="email" placeholder="nome@exemplo.co.mz">
+          </div>
+        </div>
+
+        <div class="secao-formulario">
+          <div class="secao-formulario__titulo"><i class="fa-solid fa-location-dot"></i> Endereço</div>
+          <div class="campo-grupo">
+            <label class="campo-rotulo" for="cliente-endereco">Endereço</label>
+            <input type="text" id="cliente-endereco" class="campo-entrada" placeholder="Av. Julius Nyerere, 245">
+          </div>
+          <div class="linha-campos--3">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-bairro">Bairro</label>
+              <input type="text" id="cliente-bairro" class="campo-entrada" placeholder="ex.: Sommerschield">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-distrito">Distrito</label>
+              <input type="text" id="cliente-distrito" class="campo-entrada" placeholder="ex.: KaMpfumo">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-provincia">Província</label>
+              <select id="cliente-provincia" class="campo-select">
+                <option value="">Selecione</option>
+                <option>Maputo Cidade</option><option>Maputo Província</option><option>Gaza</option>
+                <option>Inhambane</option><option>Sofala</option><option>Manica</option>
+                <option>Tete</option><option>Zambézia</option><option>Nampula</option>
+                <option>Cabo Delgado</option><option>Niassa</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao-formulario">
+          <div class="secao-formulario__titulo"><i class="fa-solid fa-user-shield"></i> Fiador</div>
+          <div class="linha-campos">
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-fiador-nome">Nome do Fiador</label>
+              <input type="text" id="cliente-fiador-nome" class="campo-entrada" placeholder="Nome completo do fiador">
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="cliente-fiador-telefone">Telefone do Fiador</label>
+              <div class="campo-prefixo-wrapper">
+                <span class="campo-prefixo">+258</span>
+                <input type="text" id="cliente-fiador-telefone" class="campo-entrada" placeholder="84 000 0000">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="secao-formulario">
+          <div class="secao-formulario__titulo"><i class="fa-solid fa-note-sticky"></i> Observações e Estado</div>
+          <div class="campo-grupo">
+            <label class="campo-rotulo" for="cliente-observacoes">Observações</label>
+            <textarea id="cliente-observacoes" class="campo-textarea" placeholder="Notas internas sobre este cliente..."></textarea>
+          </div>
+          <div class="campo-grupo" id="grupo-cliente-estado" style="display:none;">
+            <label class="campo-rotulo">Estado do Cliente</label>
+            <div class="grupo-radio">
+              <label class="opcao-radio"><input type="radio" name="cliente-estado" value="Ativo" checked> Ativo</label>
+              <label class="opcao-radio"><input type="radio" name="cliente-estado" value="Bloqueado"> Bloqueado</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__rodape">
+        <button type="button" class="botao botao--secundario" data-modal-fechar="modal-cliente">Cancelar</button>
+        <button type="submit" class="botao botao--primario" id="botao-guardar-cliente">
+          <i class="fa-solid fa-check"></i> Guardar Cliente
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/clientes.js"></script>
+</body>
+</html>

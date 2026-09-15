@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empréstimos · FIEL Microcrédito, E.I.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variaveis.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/formularios.css">
+<link rel="stylesheet" href="css/tabelas.css">
+<link rel="stylesheet" href="css/modais.css">
+<link rel="stylesheet" href="css/alertas.css">
+<link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sobreposicao-lateral-movel" id="sobreposicao-lateral-movel"></div>
+
+  <aside class="lateral">
+    <div class="lateral__cabecalho">
+      <div class="lateral__logo-marca" data-config="logotipoUrl"><span class="lateral__logo-marca-texto">F</span></div>
+      <span class="lateral__nome-empresa" data-config="nomeEmpresa">FIEL Microcrédito, E.I.</span>
+    </div>
+    <nav class="lateral__nav">
+      <div class="lateral__secao-titulo">Principal</div>
+      <a href="dashboard.html" class="item-menu" data-pagina="dashboard"><i class="fa-solid fa-gauge-high item-menu__icone"></i><span class="item-menu__texto">Painel</span></a>
+      <a href="clientes.html" class="item-menu" data-pagina="clientes"><i class="fa-solid fa-users item-menu__icone"></i><span class="item-menu__texto">Clientes</span></a>
+      <a href="emprestimos.html" class="item-menu" data-pagina="emprestimos"><i class="fa-solid fa-hand-holding-dollar item-menu__icone"></i><span class="item-menu__texto">Empréstimos</span></a>
+      <a href="pagamentos.html" class="item-menu" data-pagina="pagamentos"><i class="fa-solid fa-money-bill-transfer item-menu__icone"></i><span class="item-menu__texto">Pagamentos</span></a>
+      <a href="caixa.html" class="item-menu" data-pagina="caixa"><i class="fa-solid fa-cash-register item-menu__icone"></i><span class="item-menu__texto">Caixa</span></a>
+      <div class="lateral__secao-titulo">Análise</div>
+      <a href="relatorios.html" class="item-menu" data-pagina="relatorios"><i class="fa-solid fa-chart-line item-menu__icone"></i><span class="item-menu__texto">Relatórios</span></a>
+      <div class="lateral__secao-titulo">Sistema</div>
+      <a href="configuracoes.html" class="item-menu" data-pagina="configuracoes" data-somente-admin><i class="fa-solid fa-gears item-menu__icone"></i><span class="item-menu__texto">Configurações</span></a>
+    </nav>
+    <div class="lateral__rodape">
+      <button class="botao-recolher" id="botao-recolher-lateral" aria-label="Recolher menu"><i class="fa-solid fa-angles-left"></i></button>
+    </div>
+  </aside>
+
+  <header class="topo">
+    <div class="topo__esquerda">
+      <button class="botao-menu-movel" id="botao-menu-movel" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topo__pesquisa">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <label for="pesquisa-global-input" class="visualmente-oculto">Pesquisa global de clientes e contratos</label>
+        <input type="text" id="pesquisa-global-input" placeholder="Pesquisar clientes, contratos...">
+        <div id="pesquisa-global-resultados" class="oculto" style="position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--cor-neutro-0);border:1px solid var(--cor-borda);border-radius:var(--raio-md);box-shadow:var(--sombra-lg);max-height:360px;overflow-y:auto;z-index:var(--z-dropdown);"></div>
+      </div>
+    </div>
+    <div class="topo__direita">
+      <div class="topo__perfil">
+        <div class="avatar-iniciais" data-utilizador-iniciais>--</div>
+        <div class="topo__perfil-info">
+          <span class="topo__perfil-nome" data-utilizador-nome>Carregando...</span>
+          <span class="topo__perfil-cargo" data-utilizador-perfil>—</span>
+        </div>
+      </div>
+      <button class="botao botao--icone botao--fantasma" data-acao-logout aria-label="Terminar sessão"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+  </header>
+
+  <main class="conteudo">
+
+    <div class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Empréstimos</h1>
+        <p class="pagina-subtitulo">Simule, crie e acompanhe todos os contratos de empréstimo.</p>
+      </div>
+      <div class="pagina-acoes">
+        <button class="botao botao--primario" id="botao-novo-emprestimo">
+          <i class="fa-solid fa-plus"></i> Novo Empréstimo
+        </button>
+      </div>
+    </div>
+
+    <div class="painel-tabela">
+      <div class="painel-tabela__barra">
+        <div class="painel-tabela__pesquisa">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <label for="filtro-pesquisa-emprestimos" class="visualmente-oculto">Pesquisar empréstimos por número de contrato</label>
+          <input type="text" id="filtro-pesquisa-emprestimos" placeholder="Pesquisar por número de contrato...">
+        </div>
+        <div class="painel-tabela__filtros">
+          <label for="filtro-estado-emprestimos" class="visualmente-oculto">Filtrar empréstimos por estado</label>
+          <select id="filtro-estado-emprestimos">
+            <option value="">Todos os estados</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Ativo">Ativo</option>
+            <option value="Em atraso">Em atraso</option>
+            <option value="Liquidado">Liquidado</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="painel-tabela__scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr>
+              <th>Contrato</th>
+              <th>Cliente</th>
+              <th class="col-numerica">Valor Aprovado</th>
+              <th class="col-numerica">Saldo Devedor</th>
+              <th>Prazo</th>
+              <th>Estado</th>
+              <th class="col-acoes">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-emprestimos-corpo">
+            <tr class="linha-carregando"><td colspan="7"><div class="linha-carregando-conteudo"><div class="girador"></div> A carregar...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="painel-tabela__rodape">
+        <span class="paginacao-info" id="paginacao-info-emprestimos">—</span>
+        <div class="paginacao-controlos" id="paginacao-controlos-emprestimos"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= MODAL: NOVO EMPRÉSTIMO / SIMULAÇÃO ================= -->
+<div class="modal-fundo" id="modal-emprestimo">
+  <div class="modal modal--grande">
+    <div class="modal__cabecalho">
+      <div>
+        <div class="modal__titulo">Novo Empréstimo</div>
+        <div class="modal__subtitulo">Preencha os dados e veja a simulação em tempo real.</div>
+      </div>
+      <button class="modal__fechar" data-modal-fechar="modal-emprestimo" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <form id="form-emprestimo" novalidate>
+      <div class="modal__corpo">
+
+        <div class="grade-simulacao">
+
+          <!-- Coluna esquerda: formulário -->
+          <div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="emprestimo-cliente-busca">Cliente <span class="obrigatorio">*</span></label>
+              <div class="campo-busca-inline">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="emprestimo-cliente-busca" class="campo-entrada" placeholder="Pesquisar cliente por nome, BI ou código..." autocomplete="off">
+              </div>
+              <div id="emprestimo-cliente-resultados" style="border:1px solid var(--cor-borda);border-radius:var(--raio-md);margin-top:4px;max-height:160px;overflow-y:auto;display:none;"></div>
+              <input type="hidden" id="emprestimo-cliente-codigo" required>
+              <div id="emprestimo-cliente-selecionado" style="display:none;margin-top:var(--espaco-2);padding:var(--espaco-3);background:var(--cor-neutro-50);border-radius:var(--raio-md);font-size:var(--tamanho-sm);"></div>
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-valor-solicitado">Valor Solicitado (MT) <span class="obrigatorio">*</span></label>
+                <input type="text" id="emprestimo-valor-solicitado" class="campo-entrada" required data-validacao="positivo" placeholder="0" inputmode="numeric">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-valor-aprovado">Valor Aprovado (MT)</label>
+                <input type="text" id="emprestimo-valor-aprovado" class="campo-entrada" placeholder="Igual ao solicitado" inputmode="numeric">
+              </div>
+            </div>
+
+            <div class="linha-campos--3">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-taxa-juros">Taxa de Juros (%) <span class="obrigatorio">*</span></label>
+                <input type="number" id="emprestimo-taxa-juros" class="campo-entrada" required step="0.1" min="0" placeholder="10">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-prazo">Prazo <span class="obrigatorio">*</span></label>
+                <input type="number" id="emprestimo-prazo" class="campo-entrada" required min="1" placeholder="3">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-unidade-prazo">Unidade</label>
+                <select id="emprestimo-unidade-prazo" class="campo-select">
+                  <option value="meses">Meses</option>
+                  <option value="semanas">Semanas</option>
+                  <option value="dias">Dias</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-numero-parcelas">Número de Parcelas <span class="obrigatorio">*</span></label>
+                <input type="number" id="emprestimo-numero-parcelas" class="campo-entrada" required min="1" placeholder="3">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="emprestimo-data-desembolso">Data de Desembolso</label>
+                <input type="date" id="emprestimo-data-desembolso" class="campo-entrada">
+              </div>
+            </div>
+
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="emprestimo-observacoes">Observações</label>
+              <textarea id="emprestimo-observacoes" class="campo-textarea" placeholder="Finalidade do empréstimo, condições especiais..."></textarea>
+            </div>
+          </div>
+
+          <!-- Coluna direita: resumo da simulação -->
+          <div>
+            <div class="resumo-simulacao" id="resumo-simulacao">
+              <div class="resumo-simulacao__titulo">Resumo da Simulação</div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Valor Aprovado</span><span class="valor" id="sim-valor-aprovado">0,00 MT</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Juros Totais</span><span class="valor" id="sim-juros-totais">0,00 MT</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Número de Parcelas</span><span class="valor" id="sim-numero-parcelas">—</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Valor por Prestação</span><span class="valor" id="sim-valor-prestacao">0,00 MT</span></div>
+              <div class="resumo-simulacao__destaque">
+                <span class="rotulo">Valor Total a Pagar</span>
+                <span class="valor" id="sim-valor-total">0,00 MT</span>
+              </div>
+            </div>
+
+            <div id="tabela-simulacao-parcelas" style="margin-top:var(--espaco-4);max-height:280px;overflow-y:auto;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal__rodape">
+        <button type="button" class="botao botao--secundario" data-modal-fechar="modal-emprestimo">Cancelar</button>
+        <button type="submit" class="botao botao--primario" id="botao-criar-emprestimo">
+          <i class="fa-solid fa-check"></i> Criar Empréstimo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/emprestimos.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar Sessão · FIEL Microcrédito, E.I.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variaveis.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/formularios.css">
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/alertas.css">
+</head>
+<body>
+
+<div class="pagina-login">
+
+  <!-- Coluna de identidade (oculta em ecrãs pequenos) -->
+  <aside class="login-identidade">
+    <div class="login-identidade__marca">
+      <div class="login-identidade__logo" data-config="logotipoUrl"><span class="login-identidade__logo-texto">F</span></div>
+      <div class="login-identidade__nome" data-config="nomeEmpresa">FIEL Microcrédito, E.I.</div>
+    </div>
+
+    <div class="login-identidade__corpo">
+      <h1 class="login-identidade__titulo">Gestão de microcrédito, do jeito que o seu negócio precisa.</h1>
+      <p class="login-identidade__texto">Controle clientes, empréstimos, pagamentos e caixa num único sistema, feito para a realidade moçambicana.</p>
+
+      <div class="login-identidade__lista">
+        <div class="login-identidade__item"><i class="fa-solid fa-check"></i> Cálculo automático de juros e parcelas</div>
+        <div class="login-identidade__item"><i class="fa-solid fa-check"></i> Pagamentos via M-Pesa, e-Mola e mais</div>
+        <div class="login-identidade__item"><i class="fa-solid fa-check"></i> Recibos e relatórios em PDF e Excel</div>
+      </div>
+    </div>
+
+    <div class="login-identidade__rodape">&copy; <span id="ano-atual-identidade"></span> FIEL Microcrédito, E.I. Todos os direitos reservados.</div>
+  </aside>
+
+  <!-- Coluna do formulário -->
+  <main class="login-formulario-area">
+    <div class="login-formulario-caixa">
+
+      <div class="login-formulario-cabecalho">
+        <h2 class="login-formulario-titulo">Bem-vindo de volta</h2>
+        <p class="login-formulario-subtitulo">Introduza as suas credenciais para aceder ao sistema.</p>
+      </div>
+
+      <div id="login-erro" class="alerta-inline alerta-inline--erro oculto">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Mensagem de erro</span>
+      </div>
+
+      <form id="form-login" novalidate>
+        <div class="campo-grupo">
+          <label class="campo-rotulo" for="campo-utilizador">Utilizador</label>
+          <input type="text" id="campo-utilizador" class="campo-entrada" placeholder="ex.: admin" autocomplete="username" required>
+        </div>
+
+        <div class="campo-grupo">
+          <label class="campo-rotulo" for="campo-senha">Senha</label>
+          <div class="senha-wrapper">
+            <input type="password" id="campo-senha" class="campo-entrada" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="senha-alternar" id="alternar-visibilidade-senha" aria-label="Mostrar senha" tabindex="-1">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-opcoes-linha">
+          <label class="opcao-checkbox">
+            <input type="checkbox" id="lembrar-utilizador">
+            <span>Lembrar utilizador</span>
+          </label>
+        </div>
+
+        <button type="submit" class="botao botao--primario botao--largura-total" id="botao-entrar">
+          <i class="fa-solid fa-right-to-bracket"></i> Entrar
+        </button>
+      </form>
+
+      <div class="login-credenciais-teste oculto" id="login-credenciais-teste">
+        <strong>Credenciais de teste (dados de exemplo):</strong><br>
+        Administrador — utilizador: <strong>admin</strong> · senha: <strong>admin123</strong><br>
+        Operador — utilizador: <strong>operador</strong> · senha: <strong>operador123</strong>
+      </div>
+
+      <div class="login-rodape-formulario">
+        Sistema de Gestão de Microcrédito · Versão 1.0
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  document.getElementById('ano-atual-identidade').textContent = new Date().getFullYear();
+
+  // Preenche o utilizador lembrado, se existir
+  (function () {
+    const lembrado = localStorage.getItem('mc_utilizador_lembrado');
+    if (lembrado) {
+      document.getElementById('campo-utilizador').value = lembrado;
+      document.getElementById('lembrar-utilizador').checked = true;
+    }
+  })();
+  document.getElementById('form-login').addEventListener('submit', function () {
+    const lembrar = document.getElementById('lembrar-utilizador').checked;
+    const valor = document.getElementById('campo-utilizador').value.trim();
+    if (lembrar && valor) localStorage.setItem('mc_utilizador_lembrado', valor);
+    else localStorage.removeItem('mc_utilizador_lembrado');
+  });
+</script>
+</body>
+</html>

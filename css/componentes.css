@@ -1,0 +1,207 @@
+/**
+ * =====================================================================
+ * COMPONENTES — componentes.css
+ * =====================================================================
+ * Botões, badges, cartões de indicador, cartões genéricos.
+ * =====================================================================
+ */
+
+/* ---------------- Botões ---------------- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-2);
+  padding: var(--espaco-3) var(--espaco-5);
+  border-radius: var(--raio-md);
+  border: 1px solid transparent;
+  font-size: var(--tamanho-sm);
+  font-weight: var(--peso-medio);
+  white-space: nowrap;
+  transition: background var(--transicao-padrao), border-color var(--transicao-padrao), transform 80ms ease;
+  line-height: 1.2;
+}
+.botao:active { transform: scale(0.98); }
+.botao:disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+
+.botao--primario {
+  background: var(--cor-marinho-800);
+  color: var(--cor-neutro-0);
+}
+.botao--primario:hover { background: var(--cor-marinho-900); }
+
+.botao--sucesso {
+  background: var(--cor-esmeralda-600);
+  color: var(--cor-neutro-0);
+}
+.botao--sucesso:hover { background: var(--cor-esmeralda-500); }
+
+.botao--perigo {
+  background: var(--cor-neutro-0);
+  color: var(--cor-perigo);
+  border-color: var(--cor-terracota-100);
+}
+.botao--perigo:hover { background: var(--cor-terracota-100); }
+
+.botao--secundario {
+  background: var(--cor-neutro-0);
+  color: var(--cor-texto-principal);
+  border-color: var(--cor-borda-forte);
+}
+.botao--secundario:hover { background: var(--cor-neutro-50); }
+
+.botao--fantasma {
+  background: transparent;
+  color: var(--cor-texto-principal);
+}
+.botao--fantasma:hover { background: var(--cor-neutro-100); }
+
+.botao--pequeno { padding: var(--espaco-2) var(--espaco-3); font-size: var(--tamanho-xs); }
+.botao--icone { padding: var(--espaco-2); width: 36px; height: 36px; }
+.botao--largura-total { width: 100%; }
+
+/* ---------------- Badges de estado ---------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-1);
+  padding: 3px var(--espaco-3);
+  border-radius: var(--raio-pill);
+  font-size: var(--tamanho-xs);
+  font-weight: var(--peso-semi);
+  white-space: nowrap;
+}
+.badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.badge--ativo, .badge--pago, .badge--paga, .badge--confirmado, .badge--liquidado {
+  background: var(--cor-sucesso-fundo); color: var(--cor-esmeralda-600);
+}
+.badge--pendente, .badge--parcial {
+  background: var(--cor-aviso-fundo); color: var(--cor-ambar-600);
+}
+.badge--atrasada, .badge--em-atraso, .badge--bloqueado, .badge--estornado {
+  background: var(--cor-perigo-fundo); color: var(--cor-perigo-texto-sobre-fundo-claro);
+}
+.badge--cancelado {
+  background: var(--cor-info-fundo); color: var(--cor-marinho-600);
+}
+.badge--neutro {
+  background: var(--cor-neutro-100); color: var(--cor-neutro-600);
+}
+
+/* ---------------- Cartão genérico ---------------- */
+
+.cartao {
+  background: var(--cor-fundo-cartao);
+  border-radius: var(--raio-lg);
+  border: 1px solid var(--cor-borda);
+  padding: var(--espaco-6);
+}
+
+.cartao__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-5);
+  gap: var(--espaco-3);
+}
+
+.cartao__titulo { font-size: var(--tamanho-md); font-weight: var(--peso-semi); }
+
+/* ---------------- Cartões de indicador do dashboard ---------------- */
+
+.grade-indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--espaco-5);
+  margin-bottom: var(--espaco-6);
+}
+
+.cartao-indicador {
+  background: var(--cor-fundo-cartao);
+  border-radius: var(--raio-lg);
+  border: 1px solid var(--cor-borda);
+  padding: var(--espaco-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+  position: relative;
+  overflow: hidden;
+}
+
+.cartao-indicador__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cartao-indicador__rotulo {
+  font-size: var(--tamanho-xs);
+  font-weight: var(--peso-medio);
+  color: var(--cor-texto-secundario);
+}
+
+.cartao-indicador__icone {
+  width: 38px; height: 38px;
+  border-radius: var(--raio-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tamanho-base);
+  flex-shrink: 0;
+}
+.cartao-indicador__icone--marinho { background: var(--cor-info-fundo); color: var(--cor-marinho-700); }
+.cartao-indicador__icone--esmeralda { background: var(--cor-sucesso-fundo); color: var(--cor-esmeralda-600); }
+.cartao-indicador__icone--ambar { background: var(--cor-aviso-fundo); color: var(--cor-ambar-600); }
+.cartao-indicador__icone--terracota { background: var(--cor-perigo-fundo); color: var(--cor-perigo-texto-sobre-fundo-claro); }
+
+.cartao-indicador__valor {
+  font-size: var(--tamanho-xl);
+  font-weight: var(--peso-negrito);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.cartao-indicador__rodape {
+  font-size: var(--tamanho-xs);
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------------- Listas em cartão (últimos pagamentos, vencimentos) ---------------- */
+
+.lista-simples { display: flex; flex-direction: column; }
+
+.lista-simples__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3) 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+.lista-simples__item:last-child { border-bottom: none; padding-bottom: 0; }
+.lista-simples__item:first-child { padding-top: 0; }
+
+.lista-simples__principal { font-size: var(--tamanho-sm); font-weight: var(--peso-medio); }
+.lista-simples__secundario { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); margin-top: 2px; }
+.lista-simples__valor { font-size: var(--tamanho-sm); font-weight: var(--peso-semi); font-variant-numeric: tabular-nums; }
+
+.estado-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--espaco-10) var(--espaco-4);
+  color: var(--cor-texto-secundario);
+}
+.estado-vazio i { font-size: var(--tamanho-xxl); margin-bottom: var(--espaco-3); color: var(--cor-neutro-300); }
+.estado-vazio__titulo { font-weight: var(--peso-medio); color: var(--cor-texto-principal); margin-bottom: var(--espaco-1); }
+.estado-vazio__texto { font-size: var(--tamanho-sm); max-width: 320px; }

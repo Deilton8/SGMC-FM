@@ -1,0 +1,138 @@
+/**
+ * =====================================================================
+ * ALERTAS E MENSAGENS — alertas.css
+ * =====================================================================
+ * Toasts flutuantes no canto superior direito, empilháveis, com
+ * barra de progresso indicando o tempo até fecharem automaticamente.
+ * =====================================================================
+ */
+
+.contentor-alertas {
+  position: fixed;
+  top: var(--espaco-5);
+  right: var(--espaco-5);
+  z-index: var(--z-alerta);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+  width: 360px;
+  max-width: calc(100vw - 2 * var(--espaco-5));
+}
+
+.alerta-toast {
+  background: var(--cor-neutro-0);
+  border-radius: var(--raio-md);
+  box-shadow: var(--sombra-lg);
+  border-left: 4px solid var(--cor-info);
+  padding: var(--espaco-4) var(--espaco-5);
+  display: flex;
+  gap: var(--espaco-3);
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+  animation: entrada-toast 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes entrada-toast {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.alerta-toast.saindo {
+  animation: saida-toast 180ms ease forwards;
+}
+@keyframes saida-toast {
+  to { opacity: 0; transform: translateX(24px); }
+}
+
+.alerta-toast--sucesso { border-left-color: var(--cor-sucesso); }
+.alerta-toast--erro { border-left-color: var(--cor-perigo); }
+.alerta-toast--aviso { border-left-color: var(--cor-ambar-500); }
+.alerta-toast--info { border-left-color: var(--cor-info); }
+
+.alerta-toast__icone {
+  font-size: var(--tamanho-md);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.alerta-toast--sucesso .alerta-toast__icone { color: var(--cor-sucesso); }
+.alerta-toast--erro .alerta-toast__icone { color: var(--cor-perigo); }
+.alerta-toast--aviso .alerta-toast__icone { color: var(--cor-ambar-600); }
+.alerta-toast--info .alerta-toast__icone { color: var(--cor-info); }
+
+.alerta-toast__conteudo { flex: 1; min-width: 0; }
+.alerta-toast__titulo { font-size: var(--tamanho-sm); font-weight: var(--peso-semi); margin-bottom: 2px; }
+.alerta-toast__texto { font-size: var(--tamanho-xs); color: var(--cor-texto-secundario); }
+
+.alerta-toast__fechar {
+  border: none; background: transparent;
+  color: var(--cor-neutro-400);
+  font-size: var(--tamanho-sm);
+  flex-shrink: 0;
+  padding: 2px;
+}
+.alerta-toast__fechar:hover { color: var(--cor-texto-principal); }
+
+.alerta-toast__barra {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.3;
+  animation-name: barra-progresso-toast;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes barra-progresso-toast {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Alerta inline (dentro de formulários/páginas, não flutuante) */
+.alerta-inline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--raio-md);
+  font-size: var(--tamanho-sm);
+  margin-bottom: var(--espaco-4);
+}
+.alerta-inline--erro { background: var(--cor-perigo-fundo); color: var(--cor-perigo-texto-sobre-fundo-claro); }
+.alerta-inline--aviso { background: var(--cor-aviso-fundo); color: var(--cor-ambar-600); }
+.alerta-inline--sucesso { background: var(--cor-sucesso-fundo); color: var(--cor-esmeralda-600); }
+.alerta-inline--info { background: var(--cor-info-fundo); color: var(--cor-marinho-700); }
+.alerta-inline i { margin-top: 2px; flex-shrink: 0; }
+
+/* ---------------- Loader de página inteira ---------------- */
+
+.tela-carregamento {
+  position: fixed;
+  inset: 0;
+  background: var(--cor-fundo-app);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-4);
+  transition: opacity 250ms ease;
+}
+
+.girador {
+  width: 40px; height: 40px;
+  border: 3px solid var(--cor-neutro-200);
+  border-top-color: var(--cor-marinho-700);
+  border-radius: 50%;
+  animation: girar 700ms linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+
+.girador--pequeno { width: 18px; height: 18px; border-width: 2px; }
+
+.tela-carregamento__texto { color: var(--cor-texto-secundario); font-size: var(--tamanho-sm); }
+
+.botao .girador--pequeno { border-color: rgba(255,255,255,0.35); border-top-color: #fff; }
+.botao--secundario .girador--pequeno, .botao--fantasma .girador--pequeno {
+  border-color: var(--cor-neutro-300); border-top-color: var(--cor-marinho-700);
+}

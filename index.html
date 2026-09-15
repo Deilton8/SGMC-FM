@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8">
+<title>FIEL Microcrédito, E.I.</title>
+<script>
+  // Redireciona imediatamente com base na existência de uma sessão válida.
+  // Mantém index.html como ponto de entrada único do site (ex.: ao publicar
+  // no GitHub Pages ou noutro alojamento estático).
+  (function () {
+    const temSessao = !!localStorage.getItem('mc_token') && !!localStorage.getItem('mc_utilizador');
+    window.location.replace(temSessao ? 'dashboard.html' : 'login.html');
+  })();
+</script>
+</head>
+<body>
+  <noscript>Este sistema requer JavaScript ativado no navegador para funcionar.</noscript>
+</body>
+</html>

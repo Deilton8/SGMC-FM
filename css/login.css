@@ -1,0 +1,159 @@
+/**
+ * =====================================================================
+ * PÁGINA DE LOGIN — login.css
+ * =====================================================================
+ * Layout de duas colunas em ecrãs largos (identidade à esquerda,
+ * formulário à direita); em ecrãs estreitos, apenas o formulário,
+ * com a identidade reduzida a um cabeçalho compacto.
+ * =====================================================================
+ */
+
+.pagina-login {
+  min-height: 100vh;
+  display: flex;
+  background: var(--cor-fundo-app);
+}
+
+.login-identidade {
+  flex: 1;
+  background: linear-gradient(160deg, var(--cor-marinho-950) 0%, var(--cor-marinho-800) 100%);
+  color: var(--cor-neutro-0);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--espaco-12) var(--espaco-16);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-identidade::after {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(31, 171, 132, 0.18) 0%, transparent 70%);
+  bottom: -180px; right: -140px;
+}
+
+.login-identidade__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  position: relative;
+  z-index: 1;
+}
+
+.login-identidade__logo {
+  width: 42px; height: 42px;
+  border-radius: var(--raio-md);
+  background: var(--cor-esmeralda-500);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: var(--peso-negrito);
+  font-size: var(--tamanho-lg);
+  overflow: hidden;
+}
+
+.login-identidade__logo-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.login-identidade__nome { font-size: var(--tamanho-md); font-weight: var(--peso-semi); }
+
+.login-identidade__corpo { position: relative; z-index: 1; max-width: 420px; }
+
+.login-identidade__titulo {
+  font-size: var(--tamanho-xxl);
+  font-weight: var(--peso-semi);
+  line-height: 1.2;
+  margin-bottom: var(--espaco-4);
+  letter-spacing: -0.01em;
+}
+
+.login-identidade__texto {
+  color: var(--cor-texto-lateral);
+  font-size: var(--tamanho-base);
+  line-height: 1.6;
+}
+
+.login-identidade__lista {
+  margin-top: var(--espaco-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+}
+
+.login-identidade__item {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  font-size: var(--tamanho-sm);
+  color: var(--cor-texto-lateral);
+}
+.login-identidade__item i { color: var(--cor-esmeralda-400); font-size: var(--tamanho-base); }
+
+.login-identidade__rodape {
+  position: relative; z-index: 1;
+  font-size: var(--tamanho-xs);
+  color: rgba(199, 211, 222, 0.6);
+}
+
+.login-formulario-area {
+  width: 480px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-8);
+}
+
+.login-formulario-caixa { width: 100%; max-width: 340px; }
+
+.login-formulario-cabecalho { margin-bottom: var(--espaco-8); }
+.login-formulario-titulo { font-size: var(--tamanho-xl); font-weight: var(--peso-semi); margin-bottom: var(--espaco-2); }
+.login-formulario-subtitulo { color: var(--cor-texto-secundario); font-size: var(--tamanho-sm); }
+
+.login-opcoes-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--espaco-5);
+  font-size: var(--tamanho-sm);
+}
+
+.login-rodape-formulario {
+  margin-top: var(--espaco-8);
+  text-align: center;
+  font-size: var(--tamanho-xs);
+  color: var(--cor-texto-secundario);
+}
+
+.senha-wrapper { position: relative; }
+.senha-alternar {
+  position: absolute;
+  right: var(--espaco-3);
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--cor-neutro-400);
+  padding: var(--espaco-1);
+}
+.senha-alternar:hover { color: var(--cor-texto-principal); }
+
+.login-credenciais-teste {
+  margin-top: var(--espaco-6);
+  padding: var(--espaco-4);
+  background: var(--cor-neutro-50);
+  border-radius: var(--raio-md);
+  font-size: var(--tamanho-xs);
+  color: var(--cor-texto-secundario);
+  line-height: 1.7;
+}
+.login-credenciais-teste strong { color: var(--cor-texto-principal); }
+
+@media (max-width: 900px) {
+  .login-identidade { display: none; }
+  .login-formulario-area { width: 100%; }
+}
