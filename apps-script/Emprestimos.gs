@@ -91,7 +91,7 @@ const EmprestimosModulo = {
    */
   _calcular: function (params) {
     const valor = parseFloat(params.valorAprovado || params.valorSolicitado || 0);
-    const taxa = parseFloat(params.taxaJuros || 0); // percentual total do prazo, ex.: 10 = 10%
+    const taxa = parseFloat(params.taxaJuros || 0); // percentual por unidade de prazo, ex.: 10 = 10% ao mês (se unidadePrazo = 'meses')
     const prazo = parseInt(params.prazo || 1, 10);
     const unidadePrazo = params.unidadePrazo || 'meses';
     const numeroParcelas = parseInt(params.numeroParcelas || prazo, 10);
@@ -99,7 +99,7 @@ const EmprestimosModulo = {
     Validador.positivo(valor, 'valorAprovado');
     Validador.positivo(prazo, 'prazo');
 
-    const juroTotal = arredondar2_(valor * (taxa / 100));
+    const juroTotal = arredondar2_(valor * (taxa / 100) * prazo);
     const valorTotal = arredondar2_(valor + juroTotal);
     const valorPrestacao = arredondar2_(valorTotal / numeroParcelas);
 
