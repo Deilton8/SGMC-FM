@@ -70,7 +70,7 @@ Use a caixa de pesquisa no topo da tabela de clientes para filtrar por nome, BI,
 3. Preencha:
    - **Valor Solicitado**: o que o cliente pediu.
    - **Valor Aprovado**: pode ser igual ou diferente do solicitado (deixe em branco para ser igual).
-   - **Taxa de Juros (%)**: aplicada sobre o valor total do prazo (juro simples).
+   - **Taxa de Juros (%)**: percentual aplicado por cada unidade do prazo (dias, semanas ou meses — juro simples: taxa × prazo). Ex.: taxa de 10% com prazo de 3 meses = 30% de juro total sobre o capital, não 10%.
    - **Prazo** e **Unidade** (dias, semanas ou meses).
    - **Número de Parcelas**: por padrão, igual ao prazo (ex.: prazo de 3 meses = 3 parcelas mensais), mas pode ser ajustado.
 4. À direita, o **Resumo da Simulação** atualiza-se automaticamente à medida que preenche os campos, mostrando os juros totais, o valor de cada prestação, e o plano de parcelas completo.
