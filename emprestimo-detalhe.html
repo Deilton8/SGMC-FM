@@ -141,6 +141,92 @@
   </div>
 </div>
 
+<!-- ================= MODAL: RENEGOCIAR / REESTRUTURAR EMPRÉSTIMO ================= -->
+<div class="modal-fundo" id="modal-renegociacao">
+  <div class="modal">
+    <div class="modal__cabecalho">
+      <div>
+        <div class="modal__titulo">Renegociar / Reestruturar Empréstimo</div>
+        <div class="modal__subtitulo" id="modal-renegociacao-subtitulo">Contrato #—</div>
+      </div>
+      <button class="modal__fechar" data-modal-fechar="modal-renegociacao" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="form-renegociacao" novalidate>
+      <div class="modal__corpo">
+        <input type="hidden" id="renegociacao-numero-contrato">
+
+        <div class="alerta-inline alerta-inline--info">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Isto cria um NOVO contrato com as condições abaixo, a partir do saldo devedor atual. O contrato original passa a "Renegociado" e as suas parcelas em aberto são substituídas pelo novo plano — tudo o que já foi pago fica registado como estava.</span>
+        </div>
+
+        <div class="grade-perfil" style="grid-template-columns: 1fr 1fr; gap: var(--espaco-5);">
+          <div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="renegociacao-capital">Novo Capital (MT) <span class="obrigatorio">*</span></label>
+              <input type="text" id="renegociacao-capital" class="campo-entrada" required data-validacao="positivo" inputmode="numeric">
+              <div class="campo-ajuda">Sugerido: o saldo devedor atual. Ajuste para incluir multa acumulada ou conceder um desconto.</div>
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="renegociacao-taxa">Nova Taxa (%) <span class="obrigatorio">*</span></label>
+                <input type="number" id="renegociacao-taxa" class="campo-entrada" required step="0.1" min="0">
+                <div class="campo-ajuda">Por unidade do prazo escolhido ao lado.</div>
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="renegociacao-prazo">Novo Prazo <span class="obrigatorio">*</span></label>
+                <input type="number" id="renegociacao-prazo" class="campo-entrada" required min="1">
+              </div>
+            </div>
+
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="renegociacao-unidade">Unidade</label>
+                <select id="renegociacao-unidade" class="campo-select">
+                  <option value="dias">Dias</option>
+                  <option value="semanas">Semanas</option>
+                  <option value="meses" selected>Meses</option>
+                </select>
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="renegociacao-numero-parcelas">Nº de Parcelas</label>
+                <input type="number" id="renegociacao-numero-parcelas" class="campo-entrada" min="1" placeholder="= prazo">
+              </div>
+            </div>
+
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="renegociacao-motivo">Motivo (opcional)</label>
+              <textarea id="renegociacao-motivo" class="campo-textarea" placeholder="Ex.: cliente com dificuldades pontuais, pediu para alargar o prazo..."></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div class="resumo-simulacao" id="resumo-simulacao-renegociacao">
+              <div class="resumo-simulacao__titulo">Resumo do Novo Contrato</div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Capital</span><span class="valor" id="reneg-sim-capital">0,00 MT</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Juros Totais</span><span class="valor" id="reneg-sim-juros">0,00 MT</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Número de Parcelas</span><span class="valor" id="reneg-sim-parcelas">—</span></div>
+              <div class="resumo-simulacao__linha"><span class="rotulo">Valor por Prestação</span><span class="valor" id="reneg-sim-prestacao">0,00 MT</span></div>
+              <div class="resumo-simulacao__destaque">
+                <span class="rotulo">Valor Total do Novo Contrato</span>
+                <span class="valor" id="reneg-sim-total">0,00 MT</span>
+              </div>
+            </div>
+            <div id="tabela-simulacao-renegociacao" style="margin-top:var(--espaco-4);max-height:220px;overflow-y:auto;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal__rodape">
+        <button type="button" class="botao botao--secundario" data-modal-fechar="modal-renegociacao">Cancelar</button>
+        <button type="submit" class="botao botao--primario" id="botao-confirmar-renegociacao">
+          <i class="fa-solid fa-file-contract"></i> Confirmar Renegociação
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/modal.js"></script>

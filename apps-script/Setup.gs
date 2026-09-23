@@ -61,6 +61,7 @@ const SetupModulo = {
     folhasCriadas.push(this._criarFolhaConfiguracoes(ss));
     folhasCriadas.push(this._criarFolhaSessoes(ss));
     folhasCriadas.push(this._criarFolhaLogs(ss));
+    folhasCriadas.push(this._criarFolhaNotificacoes(ss));
 
     // Remove a folha "Página1"/"Sheet1" padrão, se existir e estiver vazia
     const folhaPadrao = ss.getSheetByName('Sheet1') || ss.getSheetByName('Página1');
@@ -134,7 +135,7 @@ const SetupModulo = {
       'numeroContrato', 'contrato', 'clienteCodigo', 'valorSolicitado', 'valorAprovado',
       'taxaJuros', 'prazo', 'unidadePrazo', 'numeroParcelas', 'juroTotal', 'valorTotal',
       'valorPrestacao', 'saldoDevedor', 'estado', 'dataDesembolso', 'observacoes',
-      'criadoEm', 'criadoPor'
+      'criadoEm', 'criadoPor', 'contratoOriginal', 'contratoRenegociadoPara'
     ];
     this._configurarCabecalho(folha, cabecalhos);
 
@@ -152,7 +153,8 @@ const SetupModulo = {
     const folha = ss.insertSheet(NOMES_FOLHAS.PARCELAS);
     const cabecalhos = [
       'id', 'numeroContrato', 'numero', 'vencimento', 'capital', 'juros',
-      'total', 'valorEmAberto', 'valorPago', 'saldo', 'estado'
+      'total', 'valorEmAberto', 'valorPago', 'saldo', 'estado',
+      'notificadoVencimentoEm', 'notificadoAtrasoEm'
     ];
     this._configurarCabecalho(folha, cabecalhos);
 
@@ -216,7 +218,12 @@ const SetupModulo = {
       ['tipoMulta', 'percentual'],
       ['valorFixoMultaDiaria', 50],
       ['numeroInicialContratos', 1],
-      ['numeroInicialRecibos', 1]
+      ['numeroInicialRecibos', 1],
+      ['notificacoesAtivas', false],
+      ['notificacoesDiasAntesVencimento', 2],
+      ['notificacoesCanal', 'email'],
+      ['notificacoesMensagemAntes', 'Olá {nomeCliente}, a sua prestação de {valorParcela} do contrato #{numeroContrato} junto de {nomeEmpresa} vence em {dataVencimento}. Regularize atempadamente para evitar multa por atraso. Obrigado.'],
+      ['notificacoesMensagemAtraso', 'Olá {nomeCliente}, a prestação de {valorParcela} do contrato #{numeroContrato} junto de {nomeEmpresa}, com vencimento em {dataVencimento}, está em atraso. Contacte-nos o quanto antes para regularizar ou renegociar. Obrigado.']
     ];
     configuracoesIniciais.forEach(function (linha) { folha.appendRow(linha); });
 
@@ -235,8 +242,94 @@ const SetupModulo = {
     const folha = ss.insertSheet(NOMES_FOLHAS.LOGS);
     this._configurarCabecalho(folha, ['data', 'origem', 'mensagem', 'contexto']);
     return NOMES_FOLHAS.LOGS;
+  },
+
+  /**
+   * Folha de auditoria das notificações de vencimento/atraso enviadas
+   * (ver Notificacoes.gs). Separada da folha "Logs" (que regista erros
+   * técnicos do sistema) porque este é um histórico de comunicação com
+   * o cliente — informação de negócio, não de depuração.
+   */
+  _criarFolhaNotificacoes: function (ss) {
+    if (ss.getSheetByName(NOMES_FOLHAS.NOTIFICACOES)) return null;
+    const folha = ss.insertSheet(NOMES_FOLHAS.NOTIFICACOES);
+    this._configurarCabecalho(folha, [
+      'id', 'numeroContrato', 'clienteCodigo', 'numeroParcela', 'tipo',
+      'canal', 'destinatario', 'mensagem', 'dataEnvio', 'sucesso', 'erro'
+    ]);
+    return NOMES_FOLHAS.NOTIFICACOES;
+  },
+
+  /**
+   * MIGRAÇÃO para instalações já existentes (criadas antes desta versão).
+   * inicializar() só cria folhas que ainda não existem e nunca acrescenta
+   * colunas a folhas já criadas — por isso quem já tinha o sistema em uso
+   * precisa desta função à parte para ganhar as colunas novas
+   * (contratoOriginal/contratoRenegociadoPara em Emprestimos,
+   * notificadoVencimentoEm/notificadoAtrasoEm em Parcelas), a folha
+   * Notificacoes, e as novas chaves de Configurações. Execute-a UMA VEZ
+   * a partir do editor (ver "atualizarEstruturaParaNovasFuncionalidades"
+   * abaixo) — é seguro correr mais do que uma vez, só acrescenta o que
+   * ainda faltar.
+   */
+  migrarParaNotificacoesERenegociacao: function () {
+    const ss = getSpreadsheet_();
+    const alteracoes = [];
+
+    alteracoes.push(this._adicionarColunasSeFaltarem_(ss, NOMES_FOLHAS.EMPRESTIMOS, ['contratoOriginal', 'contratoRenegociadoPara']));
+    alteracoes.push(this._adicionarColunasSeFaltarem_(ss, NOMES_FOLHAS.PARCELAS, ['notificadoVencimentoEm', 'notificadoAtrasoEm']));
+    alteracoes.push(this._criarFolhaNotificacoes(ss) ? 'Folha "Notificacoes" criada.' : null);
+
+    const configAtual = ConfigModulo.obter({}).data;
+    const configsNovas = [
+      ['notificacoesAtivas', false],
+      ['notificacoesDiasAntesVencimento', 2],
+      ['notificacoesCanal', 'email'],
+      ['notificacoesMensagemAntes', 'Olá {nomeCliente}, a sua prestação de {valorParcela} do contrato #{numeroContrato} junto de {nomeEmpresa} vence em {dataVencimento}. Regularize atempadamente para evitar multa por atraso. Obrigado.'],
+      ['notificacoesMensagemAtraso', 'Olá {nomeCliente}, a prestação de {valorParcela} do contrato #{numeroContrato} junto de {nomeEmpresa}, com vencimento em {dataVencimento}, está em atraso. Contacte-nos o quanto antes para regularizar ou renegociar. Obrigado.']
+    ];
+    const folhaConfig = obterFolha_(NOMES_FOLHAS.CONFIGURACOES);
+    configsNovas.forEach(function (par) {
+      if (configAtual[par[0]] === undefined) {
+        folhaConfig.appendRow(par);
+        alteracoes.push('Configuração adicionada: ' + par[0]);
+      }
+    });
+
+    return sucesso_({ alteracoes: alteracoes.filter(Boolean) }, 'Estrutura de dados atualizada para suportar notificações e renegociação.');
+  },
+
+  /** Acrescenta, no fim da folha, os cabeçalhos de 'novasColunas' que ainda não existirem. Idempotente. */
+  _adicionarColunasSeFaltarem_: function (ss, nomeFolha, novasColunas) {
+    const folha = ss.getSheetByName(nomeFolha);
+    if (!folha) return null;
+
+    const ultimaColuna = folha.getLastColumn();
+    const cabecalhosAtuais = folha.getRange(1, 1, 1, ultimaColuna).getValues()[0];
+    const emFalta = novasColunas.filter(function (col) { return cabecalhosAtuais.indexOf(col) === -1; });
+    if (emFalta.length === 0) return null;
+
+    const inicioNovo = ultimaColuna + 1;
+    folha.getRange(1, inicioNovo, 1, emFalta.length).setValues([emFalta]);
+    folha.getRange(1, inicioNovo, 1, emFalta.length).setFontWeight('bold').setBackground('#1F3A5F').setFontColor('#FFFFFF');
+    folha.autoResizeColumns(inicioNovo, emFalta.length);
+
+    return nomeFolha + ': coluna(s) "' + emFalta.join('", "') + '" adicionada(s).';
   }
 };
+
+/**
+ * Função de conveniência para executar diretamente no editor do Apps
+ * Script — execute-a UMA VEZ se o seu sistema já estava em uso antes da
+ * introdução das notificações automáticas e da renegociação de
+ * empréstimos (instalações novas já nascem com tudo isto, via
+ * inicializarTudo). Ver SetupModulo.migrarParaNotificacoesERenegociacao.
+ */
+function atualizarEstruturaParaNovasFuncionalidades() {
+  const resultado = SetupModulo.migrarParaNotificacoesERenegociacao();
+  Logger.log(JSON.stringify(resultado, null, 2));
+  return resultado;
+}
 
 /**
  * Trigger diário sugerido: cria um acionador que corre todos os dias
@@ -260,8 +353,30 @@ function criarTriggerDiario() {
   Logger.log('Trigger diário criado: correrá todos os dias por volta das 06:00.');
 }
 
-/** Função executada pelo trigger diário (ver criarTriggerDiario). */
+/**
+ * Função executada pelo trigger diário (ver criarTriggerDiario).
+ *
+ * IMPORTANTE: o envio de notificações está aqui, e NÃO dentro de
+ * EmprestimosModulo.atualizarAtrasos(), de propósito. atualizarAtrasos()
+ * também é chamada de forma SÍNCRONA a cada pedido de listagem/dashboard/
+ * relatório (ver ACOES_QUE_EXIGEM_ATRASOS_SINCRONIZADOS em Codigo.gs) —
+ * se o envio de notificações vivesse lá dentro, cada pessoa que abrisse
+ * a lista de empréstimos ou o dashboard durante o dia voltaria a disparar
+ * SMS/e-mails já enviados. Mantendo-os separados, o envio só acontece
+ * aqui, uma vez por dia, através do trigger.
+ */
 function tarefaDiariaAtualizarAtrasos() {
-  const resultado = EmprestimosModulo.atualizarAtrasos();
-  Logger.log('Atrasos atualizados: ' + JSON.stringify(resultado));
+  try {
+    const resultadoAtrasos = EmprestimosModulo.atualizarAtrasos();
+    Logger.log('Atrasos atualizados: ' + JSON.stringify(resultadoAtrasos));
+  } catch (erroAtrasos) {
+    LoggerApp.erro('tarefaDiariaAtualizarAtrasos/atualizarAtrasos', erroAtrasos, {});
+  }
+
+  try {
+    const resultadoNotificacoes = NotificacoesModulo.processarNotificacoesDiarias();
+    Logger.log('Notificações processadas: ' + JSON.stringify(resultadoNotificacoes));
+  } catch (erroNotificacoes) {
+    LoggerApp.erro('tarefaDiariaAtualizarAtrasos/processarNotificacoesDiarias', erroNotificacoes, {});
+  }
 }

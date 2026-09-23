@@ -92,6 +92,12 @@
 .badge--cancelado {
   background: var(--cor-info-fundo); color: var(--cor-marinho-600);
 }
+.badge--renegociado {
+  background: var(--cor-info-fundo); color: var(--cor-marinho-600);
+}
+.badge--substituida {
+  background: var(--cor-neutro-100); color: var(--cor-neutro-600);
+}
 .badge--neutro {
   background: var(--cor-neutro-100); color: var(--cor-neutro-600);
 }

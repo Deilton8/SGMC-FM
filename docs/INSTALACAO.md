@@ -34,7 +34,7 @@ Tempo estimado: 15 a 25 minutos na primeira configuração.
 1. Na Google Sheet que acabou de criar, vá a **Extensões → Apps Script**.
 2. Isto abre o editor do Apps Script, já ligado a esta planilha específica.
 3. Vai ver um ficheiro `Código.gs` vazio por padrão. **Apague todo o conteúdo** desse ficheiro.
-4. Para cada ficheiro `.gs` fornecido na pasta `apps-script/` deste projeto (`Codigo.gs`, `Utilitarios.gs`, `Auth.gs`, `Clientes.gs`, `Emprestimos.gs`, `Pagamentos.gs`, `Caixa.gs`, `Dashboard.gs`, `Relatorios.gs`, `Pesquisa.gs`, `Config.gs`, `Setup.gs`):
+4. Para cada ficheiro `.gs` fornecido na pasta `apps-script/` deste projeto (`Codigo.gs`, `Utilitarios.gs`, `Auth.gs`, `Clientes.gs`, `Emprestimos.gs`, `Pagamentos.gs`, `Caixa.gs`, `Dashboard.gs`, `Relatorios.gs`, `Pesquisa.gs`, `Notificacoes.gs`, `Config.gs`, `Setup.gs`):
    - No editor do Apps Script, clique no ícone **"+"** ao lado de "Ficheiros" e escolha **"Script"**.
    - Dê ao novo ficheiro o mesmo nome do ficheiro fornecido (sem a extensão `.gs`, o editor adiciona automaticamente).
    - Copie e cole todo o conteúdo do ficheiro correspondente.
@@ -47,7 +47,9 @@ Tempo estimado: 15 a 25 minutos na primeira configuração.
 2. Clique em **Executar** (▶).
 3. Na primeira execução, o Google vai pedir autorização — clique em **"Rever permissões"**, escolha a sua conta Google, clique em **"Avançado"** e depois em **"Aceder a [nome do projeto] (não seguro)"** (esta mensagem aparece porque o script ainda não foi verificado pela Google, mas é seguro pois o código é seu).
 4. Aguarde a execução terminar (deve demorar poucos segundos). Verá "Execução concluída" na parte inferior.
-5. Volte à sua Google Sheet — deverá agora ver várias folhas novas: `Utilizadores`, `Clientes`, `Emprestimos`, `Parcelas`, `Pagamentos`, `Caixa`, `Configuracoes`, `Sessoes`, `Logs`, já com dados de exemplo preenchidos.
+5. Volte à sua Google Sheet — deverá agora ver várias folhas novas: `Utilizadores`, `Clientes`, `Emprestimos`, `Parcelas`, `Pagamentos`, `Caixa`, `Configuracoes`, `Sessoes`, `Logs`, `Notificacoes`, já com dados de exemplo preenchidos.
+
+> **Já tinha o sistema instalado antes das notificações automáticas e da renegociação de empréstimos?** `inicializarTudo` só cria o que ainda não existe — não acrescenta colunas a folhas já criadas. Execute também, uma única vez, a função **`atualizarEstruturaParaNovasFuncionalidades`** (mesmo menu suspenso do passo 1 acima) para acrescentar as colunas e a folha em falta sem tocar nos dados já existentes. É seguro correr mais do que uma vez.
 
 ### Publicar como Web App
 

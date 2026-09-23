@@ -130,7 +130,7 @@ function handleRequest_(e) {
     const ACOES_QUE_PRECISAM_DE_LOCK = [
       'criarCliente', 'criarEmprestimo', 'registarPagamento',
       'registarMovimento', 'aprovarEmprestimo', 'estornarPagamento',
-      'criarUtilizador'
+      'criarUtilizador', 'renegociarEmprestimo'
     ];
 
     if (ACOES_QUE_PRECISAM_DE_LOCK.indexOf(action) !== -1) {
@@ -244,6 +244,17 @@ function executarAcao_(action, params) {
         break;
       case 'listarParcelas':
         resultado = EmprestimosModulo.listarParcelas(params);
+        break;
+      case 'renegociarEmprestimo':
+        resultado = EmprestimosModulo.renegociar(params);
+        break;
+
+      // ---------- NOTIFICAÇÕES ----------
+      case 'listarNotificacoes':
+        resultado = NotificacoesModulo.listar(params);
+        break;
+      case 'processarNotificacoesAgora':
+        resultado = NotificacoesModulo.processarAgora(params);
         break;
 
       // ---------- PAGAMENTOS ----------

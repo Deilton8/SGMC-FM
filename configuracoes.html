@@ -82,6 +82,7 @@
         <button class="menu-config__item" data-secao="geral" data-somente-admin><i class="fa-solid fa-building"></i> Empresa</button>
         <button class="menu-config__item" data-secao="financeiro" data-somente-admin><i class="fa-solid fa-percent"></i> Parâmetros Financeiros</button>
         <button class="menu-config__item" data-secao="numeracao" data-somente-admin><i class="fa-solid fa-list-ol"></i> Numeração</button>
+        <button class="menu-config__item" data-secao="notificacoes" data-somente-admin><i class="fa-solid fa-bell"></i> Notificações</button>
         <button class="menu-config__item" data-secao="seguranca" data-somente-admin><i class="fa-solid fa-shield-halved"></i> Segurança</button>
         <button class="menu-config__item" data-secao="utilizadores" data-somente-admin><i class="fa-solid fa-user-gear"></i> Utilizadores</button>
       </nav>
@@ -202,6 +203,48 @@
               <span>Alterar estes números não afeta contratos ou recibos já existentes — aplica-se apenas a novos registos.</span>
             </div>
             <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+          </form>
+        </div>
+
+        <!-- ===== Secção: Notificações ===== -->
+        <div class="cartao secao-config oculto" data-secao-config="notificacoes" data-somente-admin>
+          <div class="cartao__cabecalho"><span class="cartao__titulo">Notificações Automáticas de Vencimento e Atraso</span></div>
+          <form id="form-config-notificacoes">
+            <div class="campo-grupo">
+              <label class="opcao-checkbox">
+                <input type="checkbox" id="config-notificacoes-ativas">
+                <span>Enviar lembretes de vencimento e avisos de atraso automaticamente, todos os dias</span>
+              </label>
+              <div class="campo-ajuda">Corre uma vez por dia, junto com a atualização de atrasos (por volta das 06:00). Cada aviso é enviado no máximo uma vez por parcela — o aviso de atraso não se repete todos os dias enquanto a parcela continuar em atraso.</div>
+            </div>
+            <div class="linha-campos">
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-notificacoes-dias-antes">Avisar Quantos Dias Antes do Vencimento</label>
+                <input type="number" id="config-notificacoes-dias-antes" class="campo-entrada" min="0" max="30">
+              </div>
+              <div class="campo-grupo">
+                <label class="campo-rotulo" for="config-notificacoes-canal">Canal de Envio</label>
+                <select id="config-notificacoes-canal" class="campo-select">
+                  <option value="email">E-mail</option>
+                  <option value="sms">SMS</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
+                <div class="campo-ajuda">SMS e WhatsApp exigem um gateway externo (ex.: Twilio, 360dialog) configurado no código antes de funcionarem — ver apps-script/Notificacoes.gs. Sem isso, o envio falha de forma controlada (fica registado no histórico) mas nenhuma mensagem sai.</div>
+              </div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-notificacoes-mensagem-antes">Mensagem — Lembrete Antes do Vencimento</label>
+              <textarea id="config-notificacoes-mensagem-antes" class="campo-textarea" rows="3"></textarea>
+              <div class="campo-ajuda">Marcadores disponíveis: {nomeCliente}, {numeroContrato}, {valorParcela}, {dataVencimento}, {nomeEmpresa}.</div>
+            </div>
+            <div class="campo-grupo">
+              <label class="campo-rotulo" for="config-notificacoes-mensagem-atraso">Mensagem — Aviso de Atraso</label>
+              <textarea id="config-notificacoes-mensagem-atraso" class="campo-textarea" rows="3"></textarea>
+              <div class="campo-ajuda">Mesmos marcadores da mensagem acima.</div>
+            </div>
+            <button type="submit" class="botao botao--primario">Guardar Alterações</button>
+            <button type="button" class="botao botao--secundario" id="botao-testar-notificacoes">Testar Agora</button>
+            <div id="resultado-teste-notificacoes"></div>
           </form>
         </div>
 

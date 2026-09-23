@@ -6,11 +6,12 @@
  * prestação, geração automática do plano de parcelas) e CRUD do ciclo
  * de vida do empréstimo: Pendente -> Ativo -> Liquidado
  *                                          -> Em atraso
+ *                                          -> Renegociado (ver renegociar())
  *                        Pendente -> Cancelado
  * =====================================================================
  */
 
-const ESTADOS_EMPRESTIMO = ['Pendente', 'Ativo', 'Liquidado', 'Em atraso', 'Cancelado'];
+const ESTADOS_EMPRESTIMO = ['Pendente', 'Ativo', 'Liquidado', 'Em atraso', 'Cancelado', 'Renegociado'];
 
 const EmprestimosModulo = {
 
@@ -317,6 +318,142 @@ const EmprestimosModulo = {
     folha.getRange(linhaInfo.linha, c.indexOf('estado') + 1).setValue('Cancelado');
 
     return sucesso_(null, 'Empréstimo cancelado.');
+  },
+
+  /**
+   * Renegoceia/reestrutura um empréstimo Ativo ou Em atraso: gera um NOVO
+   * contrato com um novo plano de parcelas — reaproveitando o mesmo motor
+   * de cálculo de _calcular(), para que o novo plano respeite sempre a
+   * mesma fórmula (juro simples = capital × taxa × prazo) usada em todo
+   * o resto do sistema — e preserva a ligação ao contrato original para
+   * histórico/relatório. Substitui o antigo workaround manual (cancelar
+   * o contrato e criar um novo do zero), que perdia essa rastreabilidade
+   * (ver nota em atualizar(), acima).
+   *
+   * O saldo devedor atual é sugerido como capital do novo contrato, mas o
+   * operador pode ajustá-lo (ex.: incluir multa já vencida, ou conceder
+   * um desconto) — a mesma liberdade que já existe hoje entre
+   * valorSolicitado e valorAprovado na criação normal de um empréstimo.
+   * taxaJuros/prazo/unidadePrazo/numeroParcelas são sempre pedidos de
+   * novo: ajustar essas condições é o próprio propósito de renegociar.
+   *
+   * NÃO passa por aprovar(): nenhum dinheiro novo está a ser desembolsado
+   * ao cliente, é o MESMO saldo em dívida a continuar sob novas condições
+   * — por isso o novo contrato nasce diretamente "Ativo", sem gerar um
+   * novo movimento de saída no caixa (isso duplicaria o desembolso).
+   *
+   * Restrito a Administrador, como as outras ações financeiras sensíveis
+   * (estornar pagamento, configurações) — o frontend já oculta o botão
+   * para Operadores, mas a validação real, como sempre, está aqui.
+   *
+   * params: { numeroContrato, novoCapital (opcional; por omissão, o
+   *           saldoDevedor atual), taxaJuros, prazo, unidadePrazo,
+   *           numeroParcelas, motivo (opcional, texto livre) }
+   */
+  renegociar: function (params) {
+    exigirPerfil_(params._utilizador, ['Administrador']);
+    Validador.obrigatorio(params.numeroContrato, 'numeroContrato');
+
+    const linhaInfo = encontrarLinhaPorId_(NOMES_FOLHAS.EMPRESTIMOS, 'numeroContrato', params.numeroContrato);
+    if (!linhaInfo) return erro_('Empréstimo não encontrado.', 'NAO_ENCONTRADO');
+
+    const c = linhaInfo.cabecalhos;
+    const estadoAtual = linhaInfo.dados[c.indexOf('estado')];
+    if (['Ativo', 'Em atraso'].indexOf(estadoAtual) === -1) {
+      return erro_('Só é possível renegociar empréstimos Ativos ou Em atraso.', 'ESTADO_INVALIDO');
+    }
+
+    const saldoDevedorAtual = parseFloat(linhaInfo.dados[c.indexOf('saldoDevedor')]);
+    const clienteCodigo = linhaInfo.dados[c.indexOf('clienteCodigo')];
+
+    const novoCapital = (params.novoCapital !== undefined && params.novoCapital !== '')
+      ? parseFloat(params.novoCapital)
+      : saldoDevedorAtual;
+    Validador.positivo(novoCapital, 'novoCapital');
+
+    const calculo = this._calcular({
+      valorAprovado: novoCapital,
+      taxaJuros: params.taxaJuros,
+      prazo: params.prazo,
+      unidadePrazo: params.unidadePrazo,
+      numeroParcelas: params.numeroParcelas
+    });
+
+    const novoNumeroContrato = gerarProximoNumeroContrato_();
+    const agora = agoraISO_();
+    const observacoesNovo = 'Renegociação do contrato ' + params.numeroContrato + (params.motivo ? ' — ' + params.motivo : '');
+
+    const folhaEmprestimos = obterFolha_(NOMES_FOLHAS.EMPRESTIMOS);
+    folhaEmprestimos.appendRow([
+      novoNumeroContrato,
+      novoNumeroContrato,
+      clienteCodigo,
+      calculo.valorAprovado,
+      calculo.valorAprovado,
+      calculo.taxaJuros,
+      calculo.prazo,
+      calculo.unidadePrazo,
+      calculo.numeroParcelas,
+      calculo.juroTotal,
+      calculo.valorTotal,
+      calculo.valorPrestacao,
+      calculo.valorTotal, // saldoDevedor inicial = valor total do novo plano
+      'Ativo',
+      agora,
+      observacoesNovo,
+      agora,
+      params._utilizador ? params._utilizador.nome : 'Sistema',
+      params.numeroContrato, // contratoOriginal
+      ''                     // contratoRenegociadoPara (vazio: este É o novo)
+    ]);
+
+    const folhaParcelas = obterFolha_(NOMES_FOLHAS.PARCELAS);
+    calculo.parcelas.forEach(function (p) {
+      folhaParcelas.appendRow([
+        novoNumeroContrato + '-' + p.numero,
+        novoNumeroContrato,
+        p.numero,
+        p.vencimento,
+        p.capital,
+        p.juros,
+        p.total,
+        p.total,
+        0,
+        p.saldo,
+        'Pendente'
+        // notificadoVencimentoEm / notificadoAtrasoEm ficam em branco
+      ]);
+    });
+
+    // Fecha o contrato original como "Renegociado" e liga-o ao novo, para
+    // se poder navegar nos dois sentidos a partir do histórico do cliente.
+    folhaEmprestimos.getRange(linhaInfo.linha, c.indexOf('estado') + 1).setValue('Renegociado');
+    const colContratoRenegociadoPara = c.indexOf('contratoRenegociadoPara');
+    if (colContratoRenegociadoPara !== -1) {
+      folhaEmprestimos.getRange(linhaInfo.linha, colContratoRenegociadoPara + 1).setValue(novoNumeroContrato);
+    }
+
+    // As parcelas do contrato original ainda em aberto foram substituídas
+    // pelo novo plano — sem isto, continuariam a aparecer como
+    // Pendente/Atrasada no relatório de inadimplência e no dashboard,
+    // apesar de já não corresponderem a dívida em separado. As parcelas
+    // já PAGAS não são tocadas: continuam a refletir o que foi pago.
+    const dadosParcelas = folhaParcelas.getDataRange().getValues();
+    const cParc = dadosParcelas[0];
+    const colContratoParc = cParc.indexOf('numeroContrato');
+    const colEstadoParc = cParc.indexOf('estado');
+    for (let i = 1; i < dadosParcelas.length; i++) {
+      if (String(dadosParcelas[i][colContratoParc]) === String(params.numeroContrato) &&
+          ['Pendente', 'Parcial', 'Atrasada'].indexOf(dadosParcelas[i][colEstadoParc]) !== -1) {
+        folhaParcelas.getRange(i + 1, colEstadoParc + 1).setValue('Substituída');
+      }
+    }
+
+    return sucesso_({
+      numeroContratoOriginal: params.numeroContrato,
+      numeroContratoNovo: novoNumeroContrato,
+      calculo: calculo
+    }, 'Empréstimo renegociado com sucesso. Novo contrato #' + novoNumeroContrato + ' criado.');
   },
 
   /** Exclui definitivamente um empréstimo Pendente ou Cancelado (nunca um Ativo/Liquidado). */

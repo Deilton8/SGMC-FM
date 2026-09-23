@@ -102,6 +102,22 @@ Clique no número do contrato em qualquer lista para ver:
 | Em atraso | Tem pelo menos uma parcela vencida e não paga. |
 | Liquidado | Saldo devedor chegou a zero — quitado. |
 | Cancelado | Cancelado antes do desembolso (só é possível quando Pendente). |
+| Renegociado | Reestruturado para um novo contrato (ver abaixo) — o saldo continua a ser cobrado no novo contrato, não neste. |
+
+### Renegociar / Reestruturar um Empréstimo (apenas Administrador)
+
+Quando um cliente com um contrato **Ativo** ou **Em atraso** precisa de novas condições (prazo maior, taxa diferente, ou uma pausa para reorganizar as suas finanças), use **Renegociar** no detalhe do contrato em vez de cancelar e criar um empréstimo novo à parte — isso perde a ligação ao histórico do cliente.
+
+1. Abra o detalhe do contrato e clique em **Renegociar**.
+2. O sistema sugere como "Novo Capital" o saldo devedor atual — ajuste se quiser incluir alguma multa já vencida, ou conceder um desconto.
+3. Defina a nova taxa de juros, o novo prazo, a unidade (dias/semanas/meses) e, opcionalmente, um número de parcelas diferente do prazo.
+4. Reveja o resumo (juros totais, valor da prestação, valor total) — atualiza-se automaticamente, tal como na simulação de um empréstimo novo.
+5. Confirme. O sistema:
+   - Cria um **novo contrato**, já **Ativo** (sem passar por Pendente/Aprovar — não há novo desembolso, é o mesmo saldo a continuar sob novas condições, por isso não gera um novo movimento no caixa).
+   - Fecha o contrato original como **Renegociado**, ligado ao novo (cada um mostra um aviso com um link para o outro).
+   - Substitui as parcelas do contrato original que ainda estavam em aberto — as que já tinham sido pagas mantêm-se como estavam, para preservar o histórico real de pagamentos do cliente.
+
+Um contrato **Renegociado** não conta mais como carteira ativa nos relatórios e no painel — o saldo em dívida passa a aparecer sob o novo contrato.
 
 ---
 
@@ -173,6 +189,9 @@ Taxa de juros e multa padrão sugeridas ao criar novos empréstimos (podem sempr
 
 ### Numeração (apenas Administrador)
 Define a partir de que número os próximos contratos e recibos devem começar a ser gerados — útil ao migrar de outro sistema com numeração já em curso.
+
+### Notificações (apenas Administrador)
+Liga/desliga o envio automático de lembretes de vencimento e avisos de atraso aos clientes, uma vez por dia. Permite escolher com quantos dias de antecedência avisar antes do vencimento, o canal de envio (E-mail funciona de imediato; SMS e WhatsApp precisam de um gateway externo configurado à parte no código, ver `apps-script/Notificacoes.gs`), e o texto das duas mensagens (com marcadores como `{nomeCliente}` e `{dataVencimento}` que são substituídos automaticamente). O botão **Testar Agora** dispara o processamento imediatamente, sem esperar pela execução diária — útil para conferir a configuração antes de a deixar a correr sozinha. Cada aviso só é enviado uma vez por parcela; o histórico de envios (com sucesso ou falha) fica visível no detalhe de cada contrato.
 
 ### Segurança (apenas Administrador)
 Controla se a página de início de sessão mostra o utilizador e a senha das contas de exemplo (Administrador e Operador). Esta opção vem **desligada por predefinição** e só deve ser ligada temporariamente para fazer uma demonstração do sistema — enquanto estiver ligada, qualquer pessoa que aceda à página de login vê essas credenciais, incluindo a senha padrão da conta de Administrador.

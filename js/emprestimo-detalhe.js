@@ -6,6 +6,11 @@
 
 let EmprestimoAtual = null;
 
+function ehAdministrador() {
+  const utilizador = API.obterUtilizadorAtual();
+  return !!utilizador && utilizador.perfil === 'Administrador';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   Layout.inicializar('emprestimos');
 
@@ -18,6 +23,15 @@ document.addEventListener('DOMContentLoaded', function () {
   Mascara.moeda(document.getElementById('pagamento-valor'));
   Mascara.moeda(document.getElementById('pagamento-multa'));
   document.getElementById('form-pagamento').addEventListener('submit', submeterPagamento);
+
+  Mascara.moeda(document.getElementById('renegociacao-capital'));
+  ['renegociacao-capital', 'renegociacao-taxa', 'renegociacao-prazo', 'renegociacao-unidade', 'renegociacao-numero-parcelas'].forEach(function (id) {
+    const el = document.getElementById(id);
+    const recalcular = Utils.debounce(recalcularSimulacaoRenegociacao, 300);
+    el.addEventListener('input', recalcular);
+    el.addEventListener('change', recalcular);
+  });
+  document.getElementById('form-renegociacao').addEventListener('submit', submeterRenegociacao);
 
   carregarDetalheEmprestimo(numeroContrato);
 });
@@ -40,6 +54,7 @@ function montarHtmlDetalheEmprestimo(e) {
   const cliente = e.cliente || {};
   const classeBadge = Formato.classeBadge(e.estado);
   const podeReceberPagamento = (e.estado === 'Ativo' || e.estado === 'Em atraso');
+  const podeRenegociar = podeReceberPagamento && ehAdministrador();
 
   return (
     '<div class="pagina-cabecalho">' +
@@ -50,8 +65,12 @@ function montarHtmlDetalheEmprestimo(e) {
       '<div class="pagina-acoes">' +
         (podeReceberPagamento ? '<button class="botao botao--sucesso" data-acao="abrir-modal-pagamento"><i class="fa-solid fa-money-bill-transfer"></i> Registar Pagamento</button>' : '') +
         (e.estado === 'Pendente' ? '<button class="botao botao--primario" data-acao="aprovar-emprestimo" data-contrato="' + Utils.escaparHtml(e.numeroContrato) + '"><i class="fa-solid fa-check"></i> Aprovar</button>' : '') +
+        (podeRenegociar ? '<button class="botao botao--secundario" data-acao="abrir-modal-renegociacao"><i class="fa-solid fa-file-contract"></i> Renegociar</button>' : '') +
       '</div>' +
     '</div>' +
+
+    (e.contratoRenegociadoPara ? '<div class="alerta-inline alerta-inline--info"><i class="fa-solid fa-circle-info"></i><span>Este contrato foi renegociado. As condições atuais continuam no <a href="emprestimo-detalhe.html?contrato=' + encodeURIComponent(e.contratoRenegociadoPara) + '"><strong>contrato #' + Utils.escaparHtml(e.contratoRenegociadoPara) + '</strong></a>.</span></div>' : '') +
+    (e.contratoOriginal ? '<div class="alerta-inline alerta-inline--info"><i class="fa-solid fa-circle-info"></i><span>Este contrato nasceu de uma renegociação do <a href="emprestimo-detalhe.html?contrato=' + encodeURIComponent(e.contratoOriginal) + '"><strong>contrato #' + Utils.escaparHtml(e.contratoOriginal) + '</strong></a>.</span></div>' : '') +
 
     '<div class="grade-indicadores" style="grid-template-columns: repeat(4, 1fr);">' +
       '<div class="cartao-indicador"><span class="cartao-indicador__rotulo">Valor Aprovado</span><div class="cartao-indicador__valor">' + Formato.moeda(e.valorAprovado) + '</div></div>' +
@@ -105,12 +124,20 @@ function linhaParcelaDetalhe(p) {
   if (p.estado === 'Paga') classeLinha = 'paga';
   else if (p.estado === 'Atrasada' || (vencimento < hoje && p.estado !== 'Paga')) classeLinha = 'atrasada';
 
+  let notificacoes = '';
+  if (p.notificadoAtrasoEm) {
+    notificacoes = '<span title="Aviso de atraso enviado em ' + Formato.data(p.notificadoAtrasoEm) + '" style="color:var(--cor-perigo-texto-sobre-fundo-claro);font-size:var(--tamanho-xs);"><i class="fa-solid fa-bell"></i> Atraso avisado</span>';
+  } else if (p.notificadoVencimentoEm) {
+    notificacoes = '<span title="Lembrete de vencimento enviado em ' + Formato.data(p.notificadoVencimentoEm) + '" style="color:var(--cor-texto-secundario);font-size:var(--tamanho-xs);"><i class="fa-solid fa-bell"></i> Lembrete enviado</span>';
+  }
+
   return (
     '<div class="parcela-linha ' + classeLinha + '">' +
       '<div class="parcela-numero">' + p.numero + '</div>' +
       '<div class="parcela-detalhe">' +
         '<div class="parcela-vencimento">Vencimento: ' + Formato.data(p.vencimento) + '</div>' +
         '<div class="parcela-composicao">Capital: ' + Formato.moeda(p.capital) + ' + Juros: ' + Formato.moeda(p.juros) + '</div>' +
+        (notificacoes ? '<div class="parcela-composicao">' + notificacoes + '</div>' : '') +
       '</div>' +
       '<div class="parcela-valores">' +
         '<div class="parcela-total">' + Formato.moeda(p.total) + '</div>' +
@@ -137,6 +164,8 @@ document.addEventListener('click', function (e) {
     abrirModalPagamento();
   } else if (botao.dataset.acao === 'aprovar-emprestimo') {
     aprovarEmprestimo(botao.dataset.contrato);
+  } else if (botao.dataset.acao === 'abrir-modal-renegociacao') {
+    abrirModalRenegociacao();
   }
 });
 
@@ -198,4 +227,124 @@ async function submeterPagamento(e) {
   Modal.fechar('modal-pagamento');
   Alertas.sucesso('Pagamento registado', 'Recibo Nº ' + resposta.data.numeroRecibo + ' gerado com sucesso.');
   carregarDetalheEmprestimo(dados.numeroContrato);
+}
+
+/* =====================================================================
+   RENEGOCIAÇÃO / REESTRUTURAÇÃO
+   ===================================================================== */
+
+/**
+ * Abre o modal pré-preenchido com o saldo devedor atual (sugestão de
+ * novo capital) e as condições atuais do contrato (ponto de partida para
+ * o operador ajustar) — a mesma liberdade de ajuste que já existe entre
+ * valorSolicitado/valorAprovado na criação normal de um empréstimo.
+ */
+function abrirModalRenegociacao() {
+  document.getElementById('form-renegociacao').reset();
+  document.getElementById('renegociacao-numero-contrato').value = EmprestimoAtual.numeroContrato;
+  document.getElementById('modal-renegociacao-subtitulo').textContent = 'Contrato #' + EmprestimoAtual.numeroContrato + ' — saldo devedor atual: ' + Formato.moeda(EmprestimoAtual.saldoDevedor);
+
+  document.getElementById('renegociacao-capital').value = Math.round(parseFloat(EmprestimoAtual.saldoDevedor) || 0).toLocaleString('pt-PT');
+  document.getElementById('renegociacao-taxa').value = EmprestimoAtual.taxaJuros;
+  document.getElementById('renegociacao-prazo').value = EmprestimoAtual.prazo;
+  document.getElementById('renegociacao-unidade').value = EmprestimoAtual.unidadePrazo;
+  document.getElementById('renegociacao-numero-parcelas').value = '';
+  document.getElementById('renegociacao-motivo').value = '';
+
+  Validacao.limparErros(document.getElementById('form-renegociacao'));
+  Modal.abrir('modal-renegociacao');
+  recalcularSimulacaoRenegociacao();
+}
+
+async function recalcularSimulacaoRenegociacao() {
+  const capital = Mascara.valorNumerico(document.getElementById('renegociacao-capital'));
+  const taxaJuros = parseFloat(document.getElementById('renegociacao-taxa').value) || 0;
+  const prazo = parseInt(document.getElementById('renegociacao-prazo').value, 10) || 0;
+  const unidadePrazo = document.getElementById('renegociacao-unidade').value;
+  const numeroParcelas = parseInt(document.getElementById('renegociacao-numero-parcelas').value, 10) || prazo;
+
+  if (!capital || !prazo) {
+    limparResumoSimulacaoRenegociacao();
+    return;
+  }
+
+  const resposta = await API.chamar('simularEmprestimo', {
+    valorAprovado: capital,
+    taxaJuros: taxaJuros,
+    prazo: prazo,
+    unidadePrazo: unidadePrazo,
+    numeroParcelas: numeroParcelas
+  });
+
+  if (!resposta.success) return;
+
+  renderizarResumoSimulacaoRenegociacao(resposta.data);
+}
+
+function limparResumoSimulacaoRenegociacao() {
+  document.getElementById('reneg-sim-capital').textContent = '0,00 MT';
+  document.getElementById('reneg-sim-juros').textContent = '0,00 MT';
+  document.getElementById('reneg-sim-parcelas').textContent = '—';
+  document.getElementById('reneg-sim-prestacao').textContent = '0,00 MT';
+  document.getElementById('reneg-sim-total').textContent = '0,00 MT';
+  document.getElementById('tabela-simulacao-renegociacao').innerHTML = '';
+}
+
+function renderizarResumoSimulacaoRenegociacao(calculo) {
+  document.getElementById('reneg-sim-capital').textContent = Formato.moeda(calculo.valorAprovado);
+  document.getElementById('reneg-sim-juros').textContent = Formato.moeda(calculo.juroTotal);
+  document.getElementById('reneg-sim-parcelas').textContent = calculo.numeroParcelas;
+  document.getElementById('reneg-sim-prestacao').textContent = Formato.moeda(calculo.valorPrestacao);
+  document.getElementById('reneg-sim-total').textContent = Formato.moeda(calculo.valorTotal);
+
+  const container = document.getElementById('tabela-simulacao-renegociacao');
+  container.innerHTML = calculo.parcelas.map(function (p) {
+    return '<div style="display:flex;justify-content:space-between;padding:var(--espaco-2) 0;border-bottom:1px solid var(--cor-borda);font-size:var(--tamanho-xs);">' +
+      '<span>Parcela ' + p.numero + ' — ' + p.vencimentoFormatado + '</span>' +
+      '<span style="font-weight:600;">' + Formato.moeda(p.total) + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+async function submeterRenegociacao(e) {
+  e.preventDefault();
+
+  if (!Validacao.validarFormulario(e.target)) {
+    Alertas.aviso('Verifique o formulário', 'Preencha o novo capital, a taxa e o prazo.');
+    return;
+  }
+
+  const numeroContrato = document.getElementById('renegociacao-numero-contrato').value;
+  const dados = {
+    numeroContrato: numeroContrato,
+    novoCapital: Mascara.valorNumerico(document.getElementById('renegociacao-capital')),
+    taxaJuros: parseFloat(document.getElementById('renegociacao-taxa').value),
+    prazo: parseInt(document.getElementById('renegociacao-prazo').value, 10),
+    unidadePrazo: document.getElementById('renegociacao-unidade').value,
+    numeroParcelas: parseInt(document.getElementById('renegociacao-numero-parcelas').value, 10) || undefined,
+    motivo: document.getElementById('renegociacao-motivo').value.trim()
+  };
+
+  Modal.confirmar({
+    titulo: 'Confirmar renegociação',
+    texto: 'O contrato #' + numeroContrato + ' será fechado como "Renegociado" e um novo contrato será criado com as novas condições. Esta ação não pode ser desfeita. Deseja continuar?',
+    textoConfirmar: 'Confirmar Renegociação',
+    aoConfirmar: async function () {
+      const botao = document.getElementById('botao-confirmar-renegociacao');
+      Utils.definirBotaoCarregando(botao, true, 'A processar...');
+
+      const resposta = await API.chamar('renegociarEmprestimo', dados);
+
+      Utils.definirBotaoCarregando(botao, false);
+
+      if (!resposta.success) {
+        Alertas.erro('Não foi possível renegociar', resposta.error);
+        return;
+      }
+
+      Modal.fechar('modal-renegociacao');
+      Alertas.sucesso('Empréstimo renegociado', 'Novo contrato #' + resposta.data.numeroContratoNovo + ' criado. A abrir...');
+      window.location.href = 'emprestimo-detalhe.html?contrato=' + encodeURIComponent(resposta.data.numeroContratoNovo);
+    }
+  });
 }

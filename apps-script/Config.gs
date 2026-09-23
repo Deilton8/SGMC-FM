@@ -45,7 +45,9 @@ const ConfigModulo = {
       'nomeEmpresa', 'logotipoUrl', 'telefoneEmpresa', 'emailEmpresa', 'enderecoEmpresa',
       'moeda', 'taxaJurosPadrao', 'multaPadrao',
       'tipoMulta', 'valorFixoMultaDiaria', 'numeroInicialContratos', 'numeroInicialRecibos',
-      'mostrarCredenciaisTeste'
+      'mostrarCredenciaisTeste',
+      'notificacoesAtivas', 'notificacoesDiasAntesVencimento', 'notificacoesCanal',
+      'notificacoesMensagemAntes', 'notificacoesMensagemAtraso'
     ];
 
     // Uma célula do Google Sheets aceita no máximo 50 000 caracteres.

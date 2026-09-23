@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('form-config-geral').addEventListener('submit', function (e) { salvarSecaoConfig(e, ['nomeEmpresa', 'telefoneEmpresa', 'emailEmpresa', 'enderecoEmpresa', 'logotipoUrl', 'moeda']); });
     document.getElementById('form-config-financeiro').addEventListener('submit', function (e) { salvarSecaoConfig(e, ['taxaJurosPadrao', 'multaPadrao', 'tipoMulta', 'valorFixoMultaDiaria']); });
     document.getElementById('form-config-numeracao').addEventListener('submit', function (e) { salvarSecaoConfig(e, ['numeroInicialContratos', 'numeroInicialRecibos']); });
+    document.getElementById('form-config-notificacoes').addEventListener('submit', function (e) { salvarSecaoConfig(e, ['notificacoesAtivas', 'notificacoesDiasAntesVencimento', 'notificacoesCanal', 'notificacoesMensagemAntes', 'notificacoesMensagemAtraso']); });
+    document.getElementById('botao-testar-notificacoes').addEventListener('click', testarNotificacoesAgora);
     document.getElementById('form-config-seguranca').addEventListener('submit', function (e) { salvarSecaoConfig(e, ['mostrarCredenciaisTeste']); });
 
     document.getElementById('config-logotipo-arquivo').addEventListener('change', processarUploadLogotipo);
@@ -85,6 +87,17 @@ async function carregarConfiguracoes() {
   document.getElementById('config-numero-inicial-contratos').value = c.numeroInicialContratos || 1;
   document.getElementById('config-numero-inicial-recibos').value = c.numeroInicialRecibos || 1;
 
+  // Mesmo raciocínio do mostrarCredenciaisTeste logo abaixo: trata ausência
+  // (instalações antigas, antes de correr atualizarEstruturaParaNovasFuncionalidades)
+  // e o texto 'FALSE' do Google Sheets da mesma forma — como desligado.
+  document.getElementById('config-notificacoes-ativas').checked = (
+    c.notificacoesAtivas === true || c.notificacoesAtivas === 'true' || c.notificacoesAtivas === 'TRUE'
+  );
+  document.getElementById('config-notificacoes-dias-antes').value = (c.notificacoesDiasAntesVencimento !== undefined ? c.notificacoesDiasAntesVencimento : 2);
+  document.getElementById('config-notificacoes-canal').value = c.notificacoesCanal || 'email';
+  document.getElementById('config-notificacoes-mensagem-antes').value = c.notificacoesMensagemAntes || '';
+  document.getElementById('config-notificacoes-mensagem-atraso').value = c.notificacoesMensagemAtraso || '';
+
   // Trata ausência (instalações antigas, campo nunca gravado) e o valor
   // 'FALSE' que o próprio Google Sheets pode devolver como texto da célula
   // da mesma forma: como desligado. Só liga explicitamente para true/'true'/'TRUE'.
@@ -109,6 +122,11 @@ async function salvarSecaoConfig(e, camposRelevantes) {
   if (camposRelevantes.indexOf('valorFixoMultaDiaria') !== -1) dados.valorFixoMultaDiaria = parseFloat(document.getElementById('config-valor-fixo-multa').value);
   if (camposRelevantes.indexOf('numeroInicialContratos') !== -1) dados.numeroInicialContratos = parseInt(document.getElementById('config-numero-inicial-contratos').value, 10);
   if (camposRelevantes.indexOf('numeroInicialRecibos') !== -1) dados.numeroInicialRecibos = parseInt(document.getElementById('config-numero-inicial-recibos').value, 10);
+  if (camposRelevantes.indexOf('notificacoesAtivas') !== -1) dados.notificacoesAtivas = document.getElementById('config-notificacoes-ativas').checked;
+  if (camposRelevantes.indexOf('notificacoesDiasAntesVencimento') !== -1) dados.notificacoesDiasAntesVencimento = parseInt(document.getElementById('config-notificacoes-dias-antes').value, 10);
+  if (camposRelevantes.indexOf('notificacoesCanal') !== -1) dados.notificacoesCanal = document.getElementById('config-notificacoes-canal').value;
+  if (camposRelevantes.indexOf('notificacoesMensagemAntes') !== -1) dados.notificacoesMensagemAntes = document.getElementById('config-notificacoes-mensagem-antes').value.trim();
+  if (camposRelevantes.indexOf('notificacoesMensagemAtraso') !== -1) dados.notificacoesMensagemAtraso = document.getElementById('config-notificacoes-mensagem-atraso').value.trim();
   if (camposRelevantes.indexOf('mostrarCredenciaisTeste') !== -1) dados.mostrarCredenciaisTeste = document.getElementById('config-mostrar-credenciais-teste').checked;
 
   const botao = e.target.querySelector('button[type="submit"]');
@@ -132,6 +150,47 @@ async function salvarSecaoConfig(e, camposRelevantes) {
   if (camposRelevantes.indexOf('nomeEmpresa') !== -1) {
     Layout.carregarNomeEmpresa();
   }
+}
+
+/**
+ * Dispara o processamento de notificações imediatamente, sem esperar
+ * pelo trigger das ~06:00 — pensado para testar a configuração (canal,
+ * dias de antecedência, texto das mensagens) antes de a deixar a correr
+ * sozinha todos os dias. Mostra o resultado (quantas enviadas, quantas
+ * falharam) diretamente na página, sem precisar de ir ao registo de
+ * execuções do editor do Apps Script.
+ */
+async function testarNotificacoesAgora() {
+  const botao = document.getElementById('botao-testar-notificacoes');
+  const areaResultado = document.getElementById('resultado-teste-notificacoes');
+
+  Utils.definirBotaoCarregando(botao, true, 'A processar...');
+  areaResultado.innerHTML = '';
+
+  const resposta = await API.chamar('processarNotificacoesAgora', {});
+
+  Utils.definirBotaoCarregando(botao, false);
+
+  if (!resposta.success) {
+    Alertas.erro('Não foi possível processar', resposta.error);
+    return;
+  }
+
+  const r = resposta.data;
+  if (r.ativo === false) {
+    areaResultado.innerHTML = '<div class="alerta-inline alerta-inline--aviso"><i class="fa-solid fa-circle-info"></i><span>Notificações estão desligadas — ligue a opção acima e guarde antes de testar.</span></div>';
+    return;
+  }
+  if (r.erro) {
+    areaResultado.innerHTML = '<div class="alerta-inline alerta-inline--erro"><i class="fa-solid fa-triangle-exclamation"></i><span>' + Utils.escaparHtml(r.erro) + '</span></div>';
+    return;
+  }
+
+  areaResultado.innerHTML =
+    '<div class="alerta-inline alerta-inline--sucesso"><i class="fa-solid fa-circle-check"></i><span>' +
+    r.enviadasVencimento + ' lembrete(s) de vencimento e ' + r.enviadasAtraso + ' aviso(s) de atraso enviados agora' +
+    (r.falhas ? ', ' + r.falhas + ' falha(s) (ver histórico no detalhe de cada empréstimo)' : '') +
+    '.</span></div>';
 }
 
 /**

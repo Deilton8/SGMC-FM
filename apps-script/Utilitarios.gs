@@ -16,7 +16,8 @@ const NOMES_FOLHAS = {
   CAIXA: 'Caixa',
   CONFIGURACOES: 'Configuracoes',
   SESSOES: 'Sessoes',
-  LOGS: 'Logs'
+  LOGS: 'Logs',
+  NOTIFICACOES: 'Notificacoes'
 };
 
 /**
